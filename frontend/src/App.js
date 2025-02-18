@@ -5,7 +5,7 @@ function App() {
     const [warehouses, setWarehouses] = useState([]);
     
     useEffect(() => {
-        axios.get('http://localhost:5000/api/warehouses')
+        axios.get('https://warehouse-system-vqyo.onrender.com')
             .then(response => setWarehouses(response.data))
             .catch(error => console.error(error));
     }, []);
