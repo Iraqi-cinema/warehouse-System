@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة المخازن</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+
+        h1 {
+            background-color: #007bff;
+            color: white;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .warehouse-box {
+            width: 250px;
+            padding: 15px;
+            margin: 15px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .warehouse-box h2 {
+            color: #333;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>إدارة المخازن</h1>
+
+    <div class="container">
+        <!-- توليد المخازن من 4 إلى 12 -->
+        <script>
+            for (let i = 4; i <= 12; i++) {
+                document.write(`
+                    <div class="warehouse-box">
+                        <h2>المخزن ${i}</h2>
+                        <a href="warehouse${i}.html" class="btn">إدارة المخزن</a>
+                    </div>
+                `);
+            }
+        </script>
+    </div>
+
+</body>
+</html>
