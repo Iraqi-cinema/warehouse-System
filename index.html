@@ -3,12 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إعادة التوجيه...</title>
-    <script>
-        window.location.href = "warehouse-System/frontend/public/index.html";
-    </script>
+    <title>إدارة المخازن</title>
+
+<script>
+    if (window.location.pathname !== "/") {
+        window.location.replace("/");
+    }
+</script>
+    
 </head>
 <body>
-    <p>إذا لم يتم إعادة توجيهك تلقائيًا، <a href="/">اضغط هنا</a>.</p>
+    <div id="root"></div>
 </body>
 </html>
