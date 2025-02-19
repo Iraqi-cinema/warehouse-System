@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المخزن 4</title>
+    <title>إدارة المخزن 4</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -26,8 +26,10 @@
             color: white;
             text-decoration: none;
             border-radius: 5px;
-            margin-top: 10px;
+            margin: 10px;
             transition: 0.3s;
+            cursor: pointer;
+            border: none;
         }
 
         .btn:hover {
@@ -37,6 +39,12 @@
         .container {
             margin-top: 20px;
         }
+
+        input {
+            padding: 10px;
+            margin: 10px;
+            width: 200px;
+        }
     </style>
 </head>
 <body>
@@ -44,11 +52,65 @@
     <h1>إدارة المخزن 4</h1>
 
     <div class="container">
-        <a href="#" class="btn">إضافة منتج</a>
-        <a href="#" class="btn">حذف منتج</a>
-        <a href="#" class="btn">تحديث الكمية</a>
+        <input type="text" id="productName" placeholder="اسم المنتج">
+        <input type="number" id="productQuantity" placeholder="الكمية">
+        <button class="btn" onclick="addProduct()">إضافة منتج</button>
+
+        <input type="text" id="deleteProductName" placeholder="اسم المنتج للحذف">
+        <button class="btn" onclick="deleteProduct()">حذف منتج</button>
+
+        <input type="text" id="updateProductName" placeholder="اسم المنتج للتحديث">
+        <input type="number" id="updateProductQuantity" placeholder="الكمية الجديدة">
+        <button class="btn" onclick="updateProduct()">تحديث الكمية</button>
+
         <a href="index.html" class="btn">العودة للرئيسية</a>
     </div>
+
+    <script>
+        const API_BASE_URL = "https://warehouse-system-vqyo.onrender.com/api";
+
+        // إضافة منتج جديد
+        function addProduct() {
+            const name = document.getElementById("productName").value;
+            const quantity = document.getElementById("productQuantity").value;
+
+            fetch(`${API_BASE_URL}/products`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, quantity, warehouseId: 4 }) 
+            })
+            .then(response => response.json())
+            .then(data => alert("تمت إضافة المنتج بنجاح!"))
+            .catch(error => alert("حدث خطأ أثناء الإضافة!"));
+        }
+
+        // حذف منتج
+        function deleteProduct() {
+            const name = document.getElementById("deleteProductName").value;
+
+            fetch(`${API_BASE_URL}/products/${name}`, {
+                method: "DELETE"
+            })
+            .then(response => response.json())
+            .then(data => alert("تم حذف المنتج بنجاح!"))
+            .catch(error => alert("حدث خطأ أثناء الحذف!"));
+        }
+
+        // تحديث كمية منتج
+        function updateProduct() {
+            const name = document.getElementById("updateProductName").value;
+            const quantity = document.getElementById("updateProductQuantity").value;
+
+            fetch(`${API_BASE_URL}/products/${name}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ quantity })
+            })
+            .then(response => response.json())
+            .then(data => alert("تم تحديث المنتج بنجاح!"))
+            .catch(error => alert("حدث خطأ أثناء التحديث!"));
+        }
+    </script>
 
 </body>
 </html>
