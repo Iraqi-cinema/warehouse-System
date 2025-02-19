@@ -26,15 +26,18 @@ const Product = mongoose.model("Product", productSchema);
 // ✅ جلب المنتجات حسب `warehouseId`
 app.get("/api/products", async (req, res) => {
     try {
-        const warehouseId = parseInt(req.query.warehouseId);
+        console.log("🔍 الطلب الوارد:", req.query); // سيساعد في تصحيح الأخطاء
+        const warehouseId = req.query.warehouseId;
+        
         if (!warehouseId) {
-            return res.status(400).json({ error: "يجب تحديد warehouseId" });
+            return res.status(400).json({ error: "❌ يجب تحديد warehouseId في الطلب. مثال: /api/products?warehouseId=4" });
         }
 
         const products = await Product.find({ warehouseId });
         res.json(products);
     } catch (error) {
-        res.status(500).json({ error: "حدث خطأ أثناء جلب المنتجات" });
+        console.error("🚨 خطأ أثناء جلب المنتجات:", error);
+        res.status(500).json({ error: "❌ حدث خطأ أثناء جلب المنتجات" });
     }
 });
 
