@@ -45,6 +45,22 @@
             margin: 10px;
             width: 200px;
         }
+
+        .products-list {
+            margin-top: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            width: 60%;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: left;
+        }
+
+        .product-item {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
     </style>
 </head>
 <body>
@@ -66,8 +82,39 @@
         <a href="index.html" class="btn">العودة للرئيسية</a>
     </div>
 
+    <h2>المنتجات في المخزن</h2>
+    <div class="products-list" id="productsList">
+        <p>جاري تحميل المنتجات...</p>
+    </div>
+
     <script>
         const API_BASE_URL = "https://warehouse-system-vqyo.onrender.com/api";
+        const warehouseId = 4;
+
+        // جلب المنتجات عند تحميل الصفحة
+        function fetchProducts() {
+            fetch(`${API_BASE_URL}/products?warehouseId=${warehouseId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const list = document.getElementById("productsList");
+                    list.innerHTML = "";
+                    
+                    if (data.length === 0) {
+                        list.innerHTML = "<p>لا توجد منتجات حاليًا.</p>";
+                        return;
+                    }
+
+                    data.forEach(product => {
+                        const item = document.createElement("div");
+                        item.className = "product-item";
+                        item.innerHTML = `<strong>${product.name}</strong> - الكمية: ${product.quantity}`;
+                        list.appendChild(item);
+                    });
+                })
+                .catch(error => {
+                    document.getElementById("productsList").innerHTML = "<p style='color: red;'>حدث خطأ أثناء تحميل المنتجات.</p>";
+                });
+        }
 
         // إضافة منتج جديد
         function addProduct() {
@@ -77,11 +124,14 @@
             fetch(`${API_BASE_URL}/products`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, quantity, warehouseId: 4 }) 
+                body: JSON.stringify({ name, quantity, warehouseId }) 
             })
             .then(response => response.json())
-            .then(data => alert("تمت إضافة المنتج بنجاح!"))
-            .catch(error => alert("حدث خطأ أثناء الإضافة!"));
+            .then(() => {
+                alert("تمت إضافة المنتج بنجاح!");
+                fetchProducts(); // تحديث القائمة بعد الإضافة
+            })
+            .catch(() => alert("حدث خطأ أثناء الإضافة!"));
         }
 
         // حذف منتج
@@ -92,8 +142,11 @@
                 method: "DELETE"
             })
             .then(response => response.json())
-            .then(data => alert("تم حذف المنتج بنجاح!"))
-            .catch(error => alert("حدث خطأ أثناء الحذف!"));
+            .then(() => {
+                alert("تم حذف المنتج بنجاح!");
+                fetchProducts(); // تحديث القائمة بعد الحذف
+            })
+            .catch(() => alert("حدث خطأ أثناء الحذف!"));
         }
 
         // تحديث كمية منتج
@@ -107,9 +160,15 @@
                 body: JSON.stringify({ quantity })
             })
             .then(response => response.json())
-            .then(data => alert("تم تحديث المنتج بنجاح!"))
-            .catch(error => alert("حدث خطأ أثناء التحديث!"));
+            .then(() => {
+                alert("تم تحديث المنتج بنجاح!");
+                fetchProducts(); // تحديث القائمة بعد التحديث
+            })
+            .catch(() => alert("حدث خطأ أثناء التحديث!"));
         }
+
+        // استدعاء جلب المنتجات عند تحميل الصفحة
+        fetchProducts();
     </script>
 
 </body>
