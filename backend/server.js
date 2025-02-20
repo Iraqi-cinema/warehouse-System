@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -10,10 +11,20 @@ const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://username:password@clus
 app.use(express.json());
 app.use(cors());
 
+
+
+require("dotenv").config();
+console.log("🔍 رابط الاتصال بقاعدة البيانات:", process.env.MONGO_URI);
+
+
+
+
 // الاتصال بقاعدة البيانات
-mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => console.log("تم الاتصال بقاعدة البيانات"))
-    .catch(err => console.error("خطأ في الاتصال بقاعدة البيانات:", err));
+const mongoose = require('mongoose');
+
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log("✅ تم الاتصال بقاعدة البيانات بنجاح!"))
+    .catch(err => console.error("❌ خطأ في الاتصال بقاعدة البيانات:", err));
 
 // تعريف النموذج (Schema) للمنتجات
 const productSchema = new mongoose.Schema({
