@@ -1,100 +1,82 @@
-require('dotenv').config();
-const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+require('dotenv').config(); // تحميل متغيرات البيئة من ملف .env
 
 const app = express();
-const PORT = process.env.PORT || 5000;
-const MONGO_URI = "mongodb+srv://almohsen:qh9aomBWnSuNNpHT@cluster0.mongodb.net/warehouseDB?retryWrites=true&w=majority";
-// إعدادات السيرفر
-app.use(express.json());
-app.use(cors());
+const PORT = process.env.PORT || 5000; // استخدام المنفذ من .env أو 5000 افتراضيًا
 
+// ✅ رابط الاتصال الثابت بـ MongoDB (إذا لم يكن هناك .env)
+const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://almohsen:qh9aomBWnSuNNpHT@cluster0.mongodb.net/warehouseDB?retryWrites=true&w=majority";
 
-
-
-
-
-
-// الاتصال بقاعدة البيانات
-const mongoose = require('mongoose');
-
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+// ✅ الاتصال بقاعدة البيانات MongoDB
+mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log("✅ تم الاتصال بقاعدة البيانات بنجاح!"))
-    .catch(err => console.error("❌ خطأ في الاتصال بقاعدة البيانات:", err));
+    .catch(err => {
+        console.error("❌ خطأ في الاتصال بقاعدة البيانات:", err);
+        process.exit(1); // إيقاف الخادم إذا فشل الاتصال
+    });
 
-// تعريف النموذج (Schema) للمنتجات
+// ✅ إعدادات الـ Middleware
+app.use(cors());
+app.use(express.json());
+
+// ✅ نموذج بيانات المنتج في المخزن
 const productSchema = new mongoose.Schema({
     name: String,
     quantity: Number,
-    warehouseId: Number
+    warehouseId: Number // لربط المنتج بمخزن معين
 });
-const Product = mongoose.model("Product", productSchema);
 
-// ✅ جلب المنتجات حسب `warehouseId`
-app.get("/api/products", async (req, res) => {
+const Product = mongoose.model('Product', productSchema);
+
+// ✅ نقطة نهاية لجلب المنتجات لمخزن معين
+app.get('/api/products/:warehouseId', async (req, res) => {
     try {
-        console.log("🔍 الطلب الوارد:", req.query); // سيساعد في تصحيح الأخطاء
-        const warehouseId = req.query.warehouseId;
-        
-        if (!warehouseId) {
-            return res.status(400).json({ error: "❌ يجب تحديد warehouseId في الطلب. مثال: /api/products?warehouseId=4" });
-        }
-
+        const { warehouseId } = req.params;
         const products = await Product.find({ warehouseId });
         res.json(products);
-    } catch (error) {
-        console.error("🚨 خطأ أثناء جلب المنتجات:", error);
-        res.status(500).json({ error: "❌ حدث خطأ أثناء جلب المنتجات" });
+    } catch (err) {
+        console.error("❌ خطأ أثناء جلب المنتجات:", err);
+        res.status(500).json({ error: "حدث خطأ أثناء تحميل المنتجات." });
     }
 });
 
-// ✅ إضافة منتج جديد
-app.post("/api/products", async (req, res) => {
+// ✅ نقطة نهاية لإضافة منتج إلى المخزن
+app.post('/api/products', async (req, res) => {
     try {
         const { name, quantity, warehouseId } = req.body;
-        if (!name || !quantity || !warehouseId) {
-            return res.status(400).json({ error: "جميع الحقول مطلوبة" });
-        }
-
         const newProduct = new Product({ name, quantity, warehouseId });
         await newProduct.save();
-        res.json({ message: "تمت إضافة المنتج بنجاح", product: newProduct });
-    } catch (error) {
-        res.status(500).json({ error: "حدث خطأ أثناء إضافة المنتج" });
+        res.status(201).json({ message: "✅ المنتج تمت إضافته بنجاح!", product: newProduct });
+    } catch (err) {
+        console.error("❌ خطأ أثناء إضافة المنتج:", err);
+        res.status(500).json({ error: "حدث خطأ أثناء إضافة المنتج." });
     }
 });
 
-// ✅ تحديث كمية منتج
-app.put("/api/products/:name", async (req, res) => {
+// ✅ نقطة نهاية لحذف منتج معين من المخزن
+app.delete('/api/products/:id', async (req, res) => {
     try {
-        const { name } = req.params;
+        const { id } = req.params;
+        await Product.findByIdAndDelete(id);
+        res.json({ message: "✅ المنتج تم حذفه بنجاح!" });
+    } catch (err) {
+        console.error("❌ خطأ أثناء حذف المنتج:", err);
+        res.status(500).json({ error: "حدث خطأ أثناء حذف المنتج." });
+    }
+});
+
+// ✅ نقطة نهاية لتحديث كمية المنتج
+app.put('/api/products/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
         const { quantity } = req.body;
-        
-        const product = await Product.findOneAndUpdate({ name }, { quantity }, { new: true });
-        if (!product) {
-            return res.status(404).json({ error: "المنتج غير موجود" });
-        }
-
-        res.json({ message: "تم تحديث الكمية بنجاح", product });
-    } catch (error) {
-        res.status(500).json({ error: "حدث خطأ أثناء التحديث" });
-    }
-});
-
-// ✅ حذف منتج
-app.delete("/api/products/:name", async (req, res) => {
-    try {
-        const { name } = req.params;
-        
-        const product = await Product.findOneAndDelete({ name });
-        if (!product) {
-            return res.status(404).json({ error: "المنتج غير موجود" });
-        }
-
-        res.json({ message: "تم حذف المنتج بنجاح" });
-    } catch (error) {
-        res.status(500).json({ error: "حدث خطأ أثناء الحذف" });
+        const updatedProduct = await Product.findByIdAndUpdate(id, { quantity }, { new: true });
+        res.json({ message: "✅ تم تحديث كمية المنتج!", product: updatedProduct });
+    } catch (err) {
+        console.error("❌ خطأ أثناء تحديث المنتج:", err);
+        res.status(500).json({ error: "حدث خطأ أثناء تحديث المنتج." });
     }
 });
 
