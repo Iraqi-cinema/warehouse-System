@@ -5,7 +5,7 @@ const cors = require("cors");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://username:password@cluster.mongodb.net/warehouse";
+const MONGO_URI = process.env.MONGO_URI;
 
 // إعدادات السيرفر
 app.use(express.json());
