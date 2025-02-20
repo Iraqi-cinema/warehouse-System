@@ -12,8 +12,6 @@ app.use(cors());
 
 
 
-require("dotenv").config();
-console.log("🔍 رابط الاتصال بقاعدة البيانات:", process.env.MONGO_URI);
 
 
 
