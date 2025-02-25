@@ -1,19 +1,18 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
-require("dotenv").config(); // تحميل متغيرات البيئة من ملف .env
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+require('dotenv').config(); // تحميل متغيرات البيئة من ملف .env
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const MONGO_URI = process.env.MONGO_URI; // قراءة الرابط من ملف .env
 
-// ✅ الاتصال بقاعدة البيانات MongoDB باستخدام Mongoose
-const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://almohsen:Iiraq2020@cluster0.abkeh.mongodb.net/warehouse?retryWrites=true&w=majority";
-
+// ✅ الاتصال بقاعدة البيانات MongoDB
 mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log("✅ تم الاتصال بقاعدة البيانات بنجاح!"))
     .catch(err => {
         console.error("❌ خطأ في الاتصال بقاعدة البيانات:", err);
-        process.exit(1); // إيقاف الخادم إذا فشل الاتصال
+        process.exit(1);
     });
 
 // ✅ إعدادات الـ Middleware
@@ -27,10 +26,10 @@ const productSchema = new mongoose.Schema({
     warehouseId: Number // لربط المنتج بمخزن معين
 });
 
-const Product = mongoose.model("Product", productSchema);
+const Product = mongoose.model('Product', productSchema);
 
 // ✅ نقطة نهاية لجلب المنتجات لمخزن معين
-app.get("/api/products/:warehouseId", async (req, res) => {
+app.get('/api/products/:warehouseId', async (req, res) => {
     try {
         const { warehouseId } = req.params;
         const products = await Product.find({ warehouseId });
@@ -42,7 +41,7 @@ app.get("/api/products/:warehouseId", async (req, res) => {
 });
 
 // ✅ نقطة نهاية لإضافة منتج إلى المخزن
-app.post("/api/products", async (req, res) => {
+app.post('/api/products', async (req, res) => {
     try {
         const { name, quantity, warehouseId } = req.body;
         const newProduct = new Product({ name, quantity, warehouseId });
@@ -55,7 +54,7 @@ app.post("/api/products", async (req, res) => {
 });
 
 // ✅ نقطة نهاية لحذف منتج معين من المخزن
-app.delete("/api/products/:id", async (req, res) => {
+app.delete('/api/products/:id', async (req, res) => {
     try {
         const { id } = req.params;
         await Product.findByIdAndDelete(id);
@@ -67,7 +66,7 @@ app.delete("/api/products/:id", async (req, res) => {
 });
 
 // ✅ نقطة نهاية لتحديث كمية المنتج
-app.put("/api/products/:id", async (req, res) => {
+app.put('/api/products/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const { quantity } = req.body;
@@ -80,11 +79,11 @@ app.put("/api/products/:id", async (req, res) => {
 });
 
 // ✅ تشغيل الخادم
-app.listen(PORT, () => {
-    console.log(`🚀 الخادم يعمل على http://localhost:${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`🚀 الخادم يعمل على المنفذ ${PORT}`);
 });
 
-// ✅ نقطة الوصول الرئيسية
+// ✅ رسالة اختبارية عند فتح الصفحة الرئيسية
 app.get("/", (req, res) => {
     res.send("🚀 الخادم يعمل بنجاح!");
 });
