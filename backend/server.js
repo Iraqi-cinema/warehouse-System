@@ -7,7 +7,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // ✅ الاتصال بقاعدة البيانات MongoDB باستخدام Mongoose
-const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://almohsen:qh9aomBWnSuNNpHT@cluster0.abkeh.mongodb.net/warehouse?retryWrites=true&w=majority";
+const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://almohsen:Iiraq2020@cluster0.abkeh.mongodb.net/warehouse?retryWrites=true&w=majority";
 
 mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log("✅ تم الاتصال بقاعدة البيانات بنجاح!"))
