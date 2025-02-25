@@ -110,3 +110,8 @@ app.put('/api/products/:id', async (req, res) => {
 app.listen(PORT, () => {
     console.log(`🚀 الخادم يعمل على http://localhost:${PORT}`);
 });
+
+
+app.get("/", (req, res) => {
+    res.send("🚀 الخادم يعمل بنجاح!");
+});
