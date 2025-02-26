@@ -132,29 +132,36 @@
         let productNames = [];
 
         function fetchProducts() {
-            fetch(`${API_BASE_URL}/products?warehouseId=${warehouseId}`)
-                .then(response => response.json())
-                .then(data => {
-                    const list = document.getElementById("productsList");
-                    list.innerHTML = "";
+    fetch(`${API_BASE_URL}/products?warehouseId=${warehouseId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('فشل الاتصال بالـ API');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const list = document.getElementById("productsList");
+            list.innerHTML = "";
 
-                    productNames = data.map(product => product.name);
+            productNames = data.map(product => product.name);
 
-                    if (data.length === 0) {
-                        list.innerHTML = "<p>لا توجد منتجات حاليًا.</p>";
-                        return;
-                    }
+            if (data.length === 0) {
+                list.innerHTML = "<p>لا توجد منتجات حاليًا.</p>";
+                return;
+            }
 
-                    data.forEach(product => {
-                        const item = document.createElement("div");
-                        item.className = "product-item";
-                        item.innerHTML = `<strong>${product.name}</strong> - الكمية: ${product.quantity}`;
-                        list.appendChild(item);
-                    });
-                })
-                .catch(() => {
-                    document.getElementById("productsList").innerHTML = "<p style='color: red;'>حدث خطأ أثناء تحميل المنتجات.</p>";
-                });
+            data.forEach(product => {
+                const item = document.createElement("div");
+                item.className = "product-item";
+                item.innerHTML = `<strong>${product.name}</strong> - الكمية: ${product.quantity}`;
+                list.appendChild(item);
+            });
+        })
+        .catch(error => {
+            console.error("حدث خطأ أثناء تحميل المنتجات: ", error);
+            document.getElementById("productsList").innerHTML = "<p style='color: red;'>حدث خطأ أثناء تحميل المنتجات. يرجى المحاولة لاحقًا.</p>";
+        });
+}
         }
 
         function addProduct() {
