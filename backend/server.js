@@ -7,7 +7,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // ✅ الاتصال بقاعدة البيانات MongoDB Atlas
-const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://almohsen:Iiraq2020@cluster0.abkeh.mongodb.net/Cluster0?retryWrites=true&w=majority";
+const MONGO_URI =  "mongodb+srv://almohsen:Iiraq2020@cluster0.abkeh.mongodb.net/Cluster0?retryWrites=true&w=majority";
 
 //const MONGO_URI = "mongodb://almohsen:Iiraq2020@cluster0-shard-00-00.abkeh.mongodb.net:27017,cluster0-shard-00-01.abkeh.mongodb.net:27017,cluster0-shard-00-02.abkeh.mongodb.net:27017/myDatabase?ssl=true&replicaSet=atlas-xxxxxx-shard-0&authSource=admin&retryWrites=true&w=majority";
 
