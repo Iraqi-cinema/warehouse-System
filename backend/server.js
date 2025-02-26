@@ -5,42 +5,16 @@ require('dotenv').config(); // تحميل متغيرات البيئة من مل�
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-//const MONGO_URI = process.env.MONGO_URI; // قراءة الرابط من ملف .env
 
+// ✅ الاتصال بقاعدة البيانات MongoDB Atlas
+const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://almohsen:Iiraq2020@cluster0.abkeh.mongodb.net/myDatabase?retryWrites=true&w=majority";
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = "mongodb+srv://almohsen:Iiraq2020@cluster0.abkeh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
-});
-
-async function run() {
-  try {
-    // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
-    // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
-  } finally {
-    // Ensures that the client will close when you finish/error
-    await client.close();
-  }
-}
-run().catch(console.dir);
-
-
-// ✅ الاتصال بقاعدة البيانات MongoDB
+// التأكد من الاتصال بقاعدة البيانات
 mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log("✅ تم الاتصال بقاعدة البيانات بنجاح!"))
     .catch(err => {
         console.error("❌ خطأ في الاتصال بقاعدة البيانات:", err);
-        process.exit(1);
+        process.exit(1); // إيقاف التطبيق إذا لم يتم الاتصال
     });
 
 // ✅ إعدادات الـ Middleware
