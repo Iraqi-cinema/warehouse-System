@@ -7,7 +7,6 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
@@ -17,84 +16,57 @@
             background-color: #007bff;
             color: white;
             padding: 20px;
+            text-align: center;
         }
 
         .container {
-            width: 50%;
-            margin: 20px auto;
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            justify-content: space-between;
+            max-width: 80%;
+            margin: 20px auto;
+        }
+
+        .form-container {
+            width: 30%;
             background: white;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        input {
-            padding: 10px;
-            margin: 10px;
+        .products-list {
+            width: 65%;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-field {
             width: 100%;
-            max-width: 300px;
+            padding: 10px;
+            margin: 10px 0;
             display: block;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            text-align: center;
         }
 
         .btn {
             width: 100%;
-            max-width: 320px;
             padding: 10px;
             background-color: #007bff;
             color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            margin-top: 10px;
-            transition: 0.3s;
-            cursor: pointer;
             border: none;
-            display: block;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
         }
 
         .btn:hover {
             background-color: #0056b3;
         }
 
-        .products-list {
-            margin-top: 20px;
-            padding: 15px;
-            background: white;
-            border-radius: 10px;
-            width: 60%;
-            margin-left: auto;
-            margin-right: auto;
-            text-align: left;
-        }
-
         .product-item {
             padding: 10px;
             border-bottom: 1px solid #ddd;
-        }
-
-        .autocomplete-suggestions {
-            position: absolute;
-            background: white;
-            border: 1px solid #ddd;
-            max-height: 150px;
-            overflow-y: auto;
-            width: 100%;
-            max-width: 300px;
-            text-align: center;
-        }
-
-        .autocomplete-suggestion {
-            padding: 10px;
-            cursor: pointer;
-        }
-
-        .autocomplete-suggestion:hover {
-            background: #f0f0f0;
         }
     </style>
 </head>
@@ -103,27 +75,29 @@
     <h1>إدارة المخزن 4</h1>
 
     <div class="container">
-        <h2>إضافة منتج</h2>
-        <input type="text" id="productName" placeholder="اسم المنتج">
-        <input type="number" id="productQuantity" placeholder="الكمية">
-        <button class="btn" onclick="addProduct()">إضافة منتج</button>
+        <!-- القسم الخاص بإدارة المنتجات -->
+        <div class="form-container">
+            <h2>إدارة المنتجات</h2>
+            <input type="text" id="productName" class="input-field" placeholder="اسم المنتج">
+            <input type="number" id="productQuantity" class="input-field" placeholder="الكمية">
+            <button class="btn" onclick="addProduct()">إضافة منتج</button>
 
-        <h2>حذف منتج</h2>
-        <input type="text" id="deleteProductName" placeholder="اسم المنتج للحذف">
-        <button class="btn" onclick="deleteProduct()">حذف منتج</button>
+            <input type="text" id="deleteProductName" class="input-field" placeholder="اسم المنتج للحذف">
+            <button class="btn" onclick="deleteProduct()">حذف منتج</button>
 
-        <h2>تحديث كمية المنتج</h2>
-        <input type="text" id="updateProductName" placeholder="اسم المنتج للتحديث" oninput="showSuggestions()">
-        <div class="autocomplete-suggestions" id="autocompleteList"></div>
-        <input type="number" id="updateProductQuantity" placeholder="الكمية الجديدة">
-        <button class="btn" onclick="updateProduct()">تحديث الكمية</button>
+            <input type="text" id="updateProductName" class="input-field" placeholder="اسم المنتج للتحديث" list="productSuggestions">
+            <datalist id="productSuggestions"></datalist>
+            <input type="number" id="updateProductQuantity" class="input-field" placeholder="الكمية الجديدة">
+            <button class="btn" onclick="updateProduct()">تحديث الكمية</button>
 
-        <a href="index.html" class="btn">العودة للرئيسية</a>
-    </div>
+            <a href="index.html" class="btn">العودة للرئيسية</a>
+        </div>
 
-    <h2>المنتجات في المخزن</h2>
-    <div class="products-list" id="productsList">
-        <p>جاري تحميل المنتجات...</p>
+        <!-- قائمة المنتجات -->
+        <div class="products-list" id="productsList">
+            <h2>المنتجات في المخزن</h2>
+            <p>جاري تحميل المنتجات...</p>
+        </div>
     </div>
 
     <script>
@@ -132,107 +106,66 @@
         let productNames = [];
 
         function fetchProducts() {
-    fetch(`${API_BASE_URL}/products?warehouseId=${warehouseId}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('فشل الاتصال بالـ API');
-            }
-            return response.json();
-        })
-        .then(data => {
-            const list = document.getElementById("productsList");
-            list.innerHTML = "";
+            fetch(`${API_BASE_URL}/products?warehouseId=${warehouseId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const list = document.getElementById("productsList");
+                    list.innerHTML = "";
+                    productNames = data.map(product => product.name);
 
-            productNames = data.map(product => product.name);
+                    if (data.length === 0) {
+                        list.innerHTML = "<p>لا توجد منتجات حاليًا.</p>";
+                        return;
+                    }
 
-            if (data.length === 0) {
-                list.innerHTML = "<p>لا توجد منتجات حاليًا.</p>";
-                return;
-            }
+                    data.forEach(product => {
+                        const item = document.createElement("div");
+                        item.className = "product-item";
+                        item.innerHTML = `<strong>${product.name}</strong> - الكمية: ${product.quantity}`;
+                        list.appendChild(item);
+                    });
 
-            data.forEach(product => {
-                const item = document.createElement("div");
-                item.className = "product-item";
-                item.innerHTML = `<strong>${product.name}</strong> - الكمية: ${product.quantity}`;
-                list.appendChild(item);
+                    updateProductSuggestions();
+                })
+                .catch(() => {
+                    document.getElementById("productsList").innerHTML = "<p style='color: red;'>حدث خطأ أثناء تحميل المنتجات.</p>";
+                });
+        }
+
+        function updateProductSuggestions() {
+            const suggestions = document.getElementById("productSuggestions");
+            suggestions.innerHTML = "";
+            productNames.forEach(name => {
+                const option = document.createElement("option");
+                option.value = name;
+                suggestions.appendChild(option);
             });
-        })
-        .catch(error => {
-            console.error("حدث خطأ أثناء تحميل المنتجات: ", error);
-            document.getElementById("productsList").innerHTML = "<p style='color: red;'>حدث خطأ أثناء تحميل المنتجات. يرجى المحاولة لاحقًا.</p>";
-        });
-}
         }
 
         function addProduct() {
-            const name = document.getElementById("productName").value.trim();
-            const quantity = document.getElementById("productQuantity").value.trim();
-
-            if (!name || !quantity) return alert("الرجاء إدخال اسم المنتج والكمية.");
+            const name = document.getElementById("productName").value;
+            const quantity = document.getElementById("productQuantity").value;
 
             fetch(`${API_BASE_URL}/products`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, quantity, warehouseId })
-            })
-            .then(() => {
-                alert("تمت إضافة المنتج بنجاح!");
-                fetchProducts();
-            })
-            .catch(() => alert("حدث خطأ أثناء الإضافة!"));
+                body: JSON.stringify({ name, quantity, warehouseId }) 
+            }).then(() => fetchProducts());
         }
 
         function deleteProduct() {
-            const name = document.getElementById("deleteProductName").value.trim();
-            if (!name) return alert("الرجاء إدخال اسم المنتج.");
-
-            fetch(`${API_BASE_URL}/products`, {
-                method: "DELETE",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, warehouseId })
-            })
-            .then(() => {
-                alert("تم حذف المنتج بنجاح!");
-                fetchProducts();
-            })
-            .catch(() => alert("حدث خطأ أثناء الحذف!"));
+            const name = document.getElementById("deleteProductName").value;
+            fetch(`${API_BASE_URL}/products/${name}`, { method: "DELETE" }).then(() => fetchProducts());
         }
 
         function updateProduct() {
-            const name = document.getElementById("updateProductName").value.trim();
-            const quantity = document.getElementById("updateProductQuantity").value.trim();
-            if (!name || !quantity) return alert("الرجاء إدخال اسم المنتج والكمية الجديدة.");
-
-            fetch(`${API_BASE_URL}/products`, {
+            const name = document.getElementById("updateProductName").value;
+            const quantity = document.getElementById("updateProductQuantity").value;
+            fetch(`${API_BASE_URL}/products/${name}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, quantity, warehouseId })
-            })
-            .then(() => {
-                alert("تم تحديث المنتج بنجاح!");
-                fetchProducts();
-            })
-            .catch(() => alert("حدث خطأ أثناء التحديث!"));
-        }
-
-        function showSuggestions() {
-            const input = document.getElementById("updateProductName").value.toLowerCase();
-            const suggestionsList = document.getElementById("autocompleteList");
-            suggestionsList.innerHTML = "";
-
-            if (!input) return;
-
-            const filteredNames = productNames.filter(name => name.toLowerCase().startsWith(input));
-            filteredNames.forEach(name => {
-                const suggestion = document.createElement("div");
-                suggestion.className = "autocomplete-suggestion";
-                suggestion.innerText = name;
-                suggestion.onclick = () => {
-                    document.getElementById("updateProductName").value = name;
-                    suggestionsList.innerHTML = "";
-                };
-                suggestionsList.appendChild(suggestion);
-            });
+                body: JSON.stringify({ quantity })
+            }).then(() => fetchProducts());
         }
 
         fetchProducts();
