@@ -72,10 +72,10 @@
         <input type="number" id="productQuantity" placeholder="الكمية">
         <button class="btn" onclick="addProduct()">إضافة منتج</button>
 
-        <input type="text" id="deleteProductName" placeholder="اسم المنتج للحذف">
+        <input type="text" id="deleteProductId" placeholder="معرف المنتج للحذف">
         <button class="btn" onclick="deleteProduct()">حذف منتج</button>
 
-        <input type="text" id="updateProductName" placeholder="اسم المنتج للتحديث">
+        <input type="text" id="updateProductId" placeholder="معرف المنتج للتحديث">
         <input type="number" id="updateProductQuantity" placeholder="الكمية الجديدة">
         <button class="btn" onclick="updateProduct()">تحديث الكمية</button>
 
@@ -91,14 +91,13 @@
         const API_BASE_URL = "https://warehouse-system-vqyo.onrender.com/api";
         const warehouseId = 4;
 
-        // جلب المنتجات عند تحميل الصفحة
         function fetchProducts() {
-            fetch(`${API_BASE_URL}/products?warehouseId=${warehouseId}`)
+            fetch(`${API_BASE_URL}/products/${warehouseId}`)
                 .then(response => response.json())
                 .then(data => {
                     const list = document.getElementById("productsList");
                     list.innerHTML = "";
-                    
+
                     if (data.length === 0) {
                         list.innerHTML = "<p>لا توجد منتجات حاليًا.</p>";
                         return;
@@ -111,12 +110,11 @@
                         list.appendChild(item);
                     });
                 })
-                .catch(error => {
+                .catch(() => {
                     document.getElementById("productsList").innerHTML = "<p style='color: red;'>حدث خطأ أثناء تحميل المنتجات.</p>";
                 });
         }
 
-        // إضافة منتج جديد
         function addProduct() {
             const name = document.getElementById("productName").value;
             const quantity = document.getElementById("productQuantity").value;
@@ -124,50 +122,44 @@
             fetch(`${API_BASE_URL}/products`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, quantity, warehouseId }) 
+                body: JSON.stringify({ name, quantity, warehouseId })
             })
-            .then(response => response.json())
             .then(() => {
                 alert("تمت إضافة المنتج بنجاح!");
-                fetchProducts(); // تحديث القائمة بعد الإضافة
+                fetchProducts();
             })
             .catch(() => alert("حدث خطأ أثناء الإضافة!"));
         }
 
-        // حذف منتج
         function deleteProduct() {
-            const name = document.getElementById("deleteProductName").value;
+            const productId = document.getElementById("deleteProductId").value;
 
-            fetch(`${API_BASE_URL}/products/${name}`, {
+            fetch(`${API_BASE_URL}/products/${productId}`, {
                 method: "DELETE"
             })
-            .then(response => response.json())
             .then(() => {
                 alert("تم حذف المنتج بنجاح!");
-                fetchProducts(); // تحديث القائمة بعد الحذف
+                fetchProducts();
             })
             .catch(() => alert("حدث خطأ أثناء الحذف!"));
         }
 
-        // تحديث كمية منتج
         function updateProduct() {
-            const name = document.getElementById("updateProductName").value;
+            const productId = document.getElementById("updateProductId").value;
             const quantity = document.getElementById("updateProductQuantity").value;
 
-            fetch(`${API_BASE_URL}/products/${name}`, {
+            fetch(`${API_BASE_URL}/products/${productId}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ quantity })
             })
-            .then(response => response.json())
             .then(() => {
                 alert("تم تحديث المنتج بنجاح!");
-                fetchProducts(); // تحديث القائمة بعد التحديث
+                fetchProducts();
             })
             .catch(() => alert("حدث خطأ أثناء التحديث!"));
         }
 
-        // استدعاء جلب المنتجات عند تحميل الصفحة
         fetchProducts();
     </script>
 
