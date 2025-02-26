@@ -61,6 +61,23 @@
             padding: 10px;
             border-bottom: 1px solid #ddd;
         }
+
+        .autocomplete-suggestions {
+            position: absolute;
+            background: white;
+            border: 1px solid #ddd;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .autocomplete-suggestion {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .autocomplete-suggestion:hover {
+            background: #f0f0f0;
+        }
     </style>
 </head>
 <body>
@@ -72,10 +89,11 @@
         <input type="number" id="productQuantity" placeholder="الكمية">
         <button class="btn" onclick="addProduct()">إضافة منتج</button>
 
-        <input type="text" id="deleteProductId" placeholder="معرف المنتج للحذف">
+        <input type="text" id="deleteProductName" placeholder="اسم المنتج للحذف">
         <button class="btn" onclick="deleteProduct()">حذف منتج</button>
 
-        <input type="text" id="updateProductId" placeholder="معرف المنتج للتحديث">
+        <input type="text" id="updateProductName" placeholder="اسم المنتج للتحديث">
+        <div class="autocomplete-suggestions" id="autocompleteList"></div>
         <input type="number" id="updateProductQuantity" placeholder="الكمية الجديدة">
         <button class="btn" onclick="updateProduct()">تحديث الكمية</button>
 
@@ -90,6 +108,7 @@
     <script>
         const API_BASE_URL = "https://warehouse-system-vqyo.onrender.com/api";
         const warehouseId = 4;
+        let productNames = [];
 
         function fetchProducts() {
             fetch(`${API_BASE_URL}/products/${warehouseId}`)
@@ -97,6 +116,8 @@
                 .then(data => {
                     const list = document.getElementById("productsList");
                     list.innerHTML = "";
+
+                    productNames = data.map(product => product.name);
 
                     if (data.length === 0) {
                         list.innerHTML = "<p>لا توجد منتجات حاليًا.</p>";
@@ -132,11 +153,9 @@
         }
 
         function deleteProduct() {
-            const productId = document.getElementById("deleteProductId").value;
+            const name = document.getElementById("deleteProductName").value;
 
-            fetch(`${API_BASE_URL}/products/${productId}`, {
-                method: "DELETE"
-            })
+            fetch(`${API_BASE_URL}/products/${name}`, { method: "DELETE" })
             .then(() => {
                 alert("تم حذف المنتج بنجاح!");
                 fetchProducts();
@@ -145,10 +164,10 @@
         }
 
         function updateProduct() {
-            const productId = document.getElementById("updateProductId").value;
+            const name = document.getElementById("updateProductName").value;
             const quantity = document.getElementById("updateProductQuantity").value;
 
-            fetch(`${API_BASE_URL}/products/${productId}`, {
+            fetch(`${API_BASE_URL}/products/${name}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ quantity })
