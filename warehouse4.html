@@ -19,31 +19,46 @@
             padding: 20px;
         }
 
-        .btn {
-            display: inline-block;
-            padding: 10px 15px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            margin: 10px;
-            transition: 0.3s;
-            cursor: pointer;
-            border: none;
-        }
-
-        .btn:hover {
-            background-color: #0056b3;
-        }
-
         .container {
-            margin-top: 20px;
+            width: 50%;
+            margin: 20px auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
         input {
             padding: 10px;
             margin: 10px;
-            width: 200px;
+            width: 100%;
+            max-width: 300px;
+            display: block;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .btn {
+            width: 100%;
+            max-width: 320px;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            transition: 0.3s;
+            cursor: pointer;
+            border: none;
+            display: block;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
         }
 
         .products-list {
@@ -68,6 +83,9 @@
             border: 1px solid #ddd;
             max-height: 150px;
             overflow-y: auto;
+            width: 100%;
+            max-width: 300px;
+            text-align: center;
         }
 
         .autocomplete-suggestion {
@@ -85,14 +103,17 @@
     <h1>إدارة المخزن 4</h1>
 
     <div class="container">
+        <h2>إضافة منتج</h2>
         <input type="text" id="productName" placeholder="اسم المنتج">
         <input type="number" id="productQuantity" placeholder="الكمية">
         <button class="btn" onclick="addProduct()">إضافة منتج</button>
 
+        <h2>حذف منتج</h2>
         <input type="text" id="deleteProductName" placeholder="اسم المنتج للحذف">
         <button class="btn" onclick="deleteProduct()">حذف منتج</button>
 
-        <input type="text" id="updateProductName" placeholder="اسم المنتج للتحديث">
+        <h2>تحديث كمية المنتج</h2>
+        <input type="text" id="updateProductName" placeholder="اسم المنتج للتحديث" oninput="showSuggestions()">
         <div class="autocomplete-suggestions" id="autocompleteList"></div>
         <input type="number" id="updateProductQuantity" placeholder="الكمية الجديدة">
         <button class="btn" onclick="updateProduct()">تحديث الكمية</button>
@@ -111,7 +132,7 @@
         let productNames = [];
 
         function fetchProducts() {
-            fetch(`${API_BASE_URL}/products/${warehouseId}`)
+            fetch(`${API_BASE_URL}/products?warehouseId=${warehouseId}`)
                 .then(response => response.json())
                 .then(data => {
                     const list = document.getElementById("productsList");
@@ -137,8 +158,10 @@
         }
 
         function addProduct() {
-            const name = document.getElementById("productName").value;
-            const quantity = document.getElementById("productQuantity").value;
+            const name = document.getElementById("productName").value.trim();
+            const quantity = document.getElementById("productQuantity").value.trim();
+
+            if (!name || !quantity) return alert("الرجاء إدخال اسم المنتج والكمية.");
 
             fetch(`${API_BASE_URL}/products`, {
                 method: "POST",
@@ -153,9 +176,14 @@
         }
 
         function deleteProduct() {
-            const name = document.getElementById("deleteProductName").value;
+            const name = document.getElementById("deleteProductName").value.trim();
+            if (!name) return alert("الرجاء إدخال اسم المنتج.");
 
-            fetch(`${API_BASE_URL}/products/${name}`, { method: "DELETE" })
+            fetch(`${API_BASE_URL}/products`, {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, warehouseId })
+            })
             .then(() => {
                 alert("تم حذف المنتج بنجاح!");
                 fetchProducts();
@@ -164,19 +192,40 @@
         }
 
         function updateProduct() {
-            const name = document.getElementById("updateProductName").value;
-            const quantity = document.getElementById("updateProductQuantity").value;
+            const name = document.getElementById("updateProductName").value.trim();
+            const quantity = document.getElementById("updateProductQuantity").value.trim();
+            if (!name || !quantity) return alert("الرجاء إدخال اسم المنتج والكمية الجديدة.");
 
-            fetch(`${API_BASE_URL}/products/${name}`, {
+            fetch(`${API_BASE_URL}/products`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ quantity })
+                body: JSON.stringify({ name, quantity, warehouseId })
             })
             .then(() => {
                 alert("تم تحديث المنتج بنجاح!");
                 fetchProducts();
             })
             .catch(() => alert("حدث خطأ أثناء التحديث!"));
+        }
+
+        function showSuggestions() {
+            const input = document.getElementById("updateProductName").value.toLowerCase();
+            const suggestionsList = document.getElementById("autocompleteList");
+            suggestionsList.innerHTML = "";
+
+            if (!input) return;
+
+            const filteredNames = productNames.filter(name => name.toLowerCase().startsWith(input));
+            filteredNames.forEach(name => {
+                const suggestion = document.createElement("div");
+                suggestion.className = "autocomplete-suggestion";
+                suggestion.innerText = name;
+                suggestion.onclick = () => {
+                    document.getElementById("updateProductName").value = name;
+                    suggestionsList.innerHTML = "";
+                };
+                suggestionsList.appendChild(suggestion);
+            });
         }
 
         fetchProducts();
