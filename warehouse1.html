@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إدارة المخزن 1</title>
+    <title>إدارة المخزن 4</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -28,18 +28,30 @@
             margin: 20px auto;
         }
 
-        .form-container, .products-list {
-            width: 45%;
+        .form-container {
+            width: 35%;
             background: #333;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
         }
 
+        .products-list {
+            width: 60%;
+            background: #333;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            height: 400px;
+            overflow-y: auto;
+        }
+
         .input-field {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
+            display: block;
+            box-sizing: border-box;
             border: 1px solid #ccc;
             border-radius: 5px;
             background: #444;
@@ -56,6 +68,7 @@
             cursor: pointer;
             margin-top: 10px;
             font-size: 16px;
+            margin: 15px 0;
         }
 
         .btn:hover {
@@ -64,8 +77,8 @@
 
         .product-item {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
             padding: 10px;
             border-bottom: 1px solid #777;
             font-size: 16px;
@@ -74,6 +87,8 @@
         .quantity {
             font-weight: bold;
             color: yellow;
+            min-width: 50px;
+            text-align: center;
         }
 
         .low-stock {
@@ -86,7 +101,6 @@
             border: none;
             padding: 5px;
             cursor: pointer;
-            margin-left: 10px;
             border-radius: 3px;
             font-size: 12px;
         }
@@ -110,7 +124,8 @@
             <input type="text" id="deleteProductName" class="input-field" placeholder="اسم المنتج للحذف">
             <button class="btn" onclick="deleteProduct()">حذف منتج</button>
 
-            <input type="text" id="updateProductName" class="input-field" placeholder="اسم المنتج للتحديث">
+            <input type="text" id="updateProductName" class="input-field" placeholder="اسم المنتج للتحديث" list="productSuggestions">
+            <datalist id="productSuggestions"></datalist>
             <input type="number" id="updateProductQuantity" class="input-field" placeholder="الكمية الجديدة">
             <button class="btn" onclick="updateProduct()">تحديث الكمية</button>
 
@@ -125,7 +140,7 @@
 
     <script>
         const API_BASE_URL = "https://warehouse-system-vqyo.onrender.com/api";
-        const warehouseId = 1; // ⚠️ هنا نغير رقم المخزن لكل صفحة
+        const warehouseId = 1;
 
         function fetchProducts() {
             fetch(`${API_BASE_URL}/products/${warehouseId}`)
@@ -146,7 +161,7 @@
                         const quantityClass = product.quantity < 5 ? "low-stock" : "quantity";
 
                         item.innerHTML = `
-                            <strong>${product.name}</strong>
+                            <span><strong>${product.name}</strong></span>
                             <span class="${quantityClass}">${product.quantity}</span>
                             <button class="copy-btn" onclick="copyId('${product.id}')">📋</button>
                         `;
@@ -187,7 +202,6 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ name, quantity, warehouseId }) 
             })
-            .then(response => response.json())
             .then(() => {
                 alert("تمت إضافة المنتج بنجاح!");
                 fetchProducts();
@@ -206,7 +220,6 @@
             fetch(`${API_BASE_URL}/products/${encodeURIComponent(name)}`, {
                 method: "DELETE"
             })
-            .then(response => response.json())
             .then(() => {
                 alert("تم حذف المنتج بنجاح!");
                 fetchProducts();
@@ -228,7 +241,6 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ quantity })
             })
-            .then(response => response.json())
             .then(() => {
                 alert("تم تحديث المنتج بنجاح!");
                 fetchProducts();
