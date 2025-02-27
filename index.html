@@ -338,6 +338,41 @@
                     </div>
                 `);
             }
+
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  const infoButton = document.getElementById('infoButton');
+  const infoCard = document.getElementById('infoCard');
+  const closeCard = document.getElementById('closeCard');
+
+  // عند الضغط على الزر لإظهار البطاقة
+  infoButton.addEventListener('click', () => {
+    infoCard.classList.add('visible');
+    infoCard.classList.remove('hidden');
+  });
+
+  // عند الضغط على زر الإغلاق لإخفاء البطاقة
+  closeCard.addEventListener('click', () => {
+    infoCard.classList.remove('visible');
+    infoCard.classList.add('hidden');
+  });
+
+  // إغلاق البطاقة عند الضغط خارجها
+  document.addEventListener('click', (event) => {
+    if (!infoCard.contains(event.target) && !infoButton.contains(event.target)) {
+      infoCard.classList.remove('visible');
+      infoCard.classList.add('hidden');
+    }
+  });
+});
+
+
+
+            
         </script>
     </div>
 
