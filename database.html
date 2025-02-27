@@ -27,45 +27,84 @@
             flex-wrap: wrap;
             justify-content: center;
             margin-top: 20px;
-            gap: 15px;
         }
 
-        .database-btn {
+        .database-box {
             width: 250px;
             padding: 15px;
+            margin: 15px;
             background-color: #333;
-            border: none;
             border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            transition: 0.3s;
+        }
+
+        .database-box:hover {
+            transform: scale(1.05);
+        }
+
+        .database-box h2 {
+            color: #f4f4f4;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #007bff;
             color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .back-btn {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            padding: 10px 15px;
+            background-color: #555;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
             font-size: 16px;
             cursor: pointer;
             transition: 0.3s;
         }
 
-        .database-btn:hover {
-            background-color: #007bff;
+        .back-btn:hover {
+            background-color: #777;
         }
-
     </style>
 </head>
 <body>
 
     <h1>قواعد بيانات المخازن</h1>
 
-    <div class="container" id="buttonsContainer"></div>
+    <!-- زر العودة -->
+    <button onclick="goBack()" class="back-btn">العودة</button>
+
+    <div class="container">
+        <script>
+            for (let i = 1; i <= 12; i++) {
+                document.write(`
+                    <div class="database-box">
+                        <h2>قاعدة بيانات المخزن ${i}</h2>
+                        <a href="https://warehouse-system-vqyo.onrender.com/api/products/${i}" class="btn" target="_blank">عرض البيانات</a>
+                    </div>
+                `);
+            }
+        </script>
+    </div>
 
     <script>
-        const baseURL = "https://warehouse-system-vqyo.onrender.com/api/products/";
-
-        for (let i = 1; i <= 12; i++) {
-            const button = document.createElement("button");
-            button.className = "database-btn";
-            button.innerText = `قاعدة بيانات مخزن ${i}`;
-            button.onclick = () => {
-                window.location.href = baseURL + i;
-            };
-
-            document.getElementById("buttonsContainer").appendChild(button);
+        function goBack() {
+            window.history.back();
         }
     </script>
 
