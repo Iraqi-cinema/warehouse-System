@@ -143,45 +143,50 @@
         const warehouseId = 4;
 
         function fetchProducts() {
-            fetch(`${API_BASE_URL}/products/${warehouseId}`)
-                .then(response => response.json())
-                .then(data => {
-                    const list = document.getElementById("productsList");
-                    list.innerHTML = "<h2>المنتجات في المخزن</h2>";
+    fetch(`${API_BASE_URL}/products/${warehouseId}`)
+        .then(response => response.json())
+        .then(data => {
+            const list = document.getElementById("productsList");
+            list.innerHTML = "<h2>المنتجات في المخزن</h2>";
 
-                    if (data.length === 0) {
-                        list.innerHTML += "<p>لا توجد منتجات حاليًا.</p>";
-                        return;
-                    }
+            if (data.length === 0) {
+                list.innerHTML += "<p>لا توجد منتجات حاليًا.</p>";
+                return;
+            }
 
-                    data.forEach(product => {
-                        const item = document.createElement("div");
-                        item.className = "product-item";
+            data.forEach(product => {
+                const item = document.createElement("div");
+                item.className = "product-item";
 
-                        const quantityClass = product.quantity < 5 ? "low-stock" : "quantity";
+                const quantityClass = product.quantity < 5 ? "low-stock" : "quantity";
 
-                        item.innerHTML = `
-                            <strong>${product.name}</strong>
-                            <span class="${quantityClass}">${product.quantity}</span>
-                            <button class="copy-btn" onclick="copyId('${product.id}')">📋</button>
-                        `;
+                item.innerHTML = `
+                    <strong>${product.name}</strong>
+                    <span class="${quantityClass}">${product.quantity}</span>
+                    <button class="copy-btn" onclick="copyId('${product.id}')">📋</button>
+                `;
 
-                        list.appendChild(item);
-                    });
-                })
-                .catch(error => {
-                    console.error("خطأ أثناء جلب المنتجات:", error);
-                    document.getElementById("productsList").innerHTML = "<p style='color: red;'>حدث خطأ أثناء تحميل المنتجات.</p>";
-                });
-        }
-
-        function copyId(id) {
-            navigator.clipboard.writeText(id).then(() => {
-                alert("تم نسخ ID المنتج: " + id);
-            }).catch(() => {
-                alert("فشل في نسخ ID المنتج!");
+                list.appendChild(item);
             });
-        }
+        })
+        .catch(error => {
+            console.error("خطأ أثناء جلب المنتجات:", error);
+            document.getElementById("productsList").innerHTML = "<p style='color: red;'>حدث خطأ أثناء تحميل المنتجات.</p>";
+        });
+}
+
+        function copyId(productId) {
+    if (!productId) {
+        alert("لم يتم العثور على معرف المنتج!");
+        return;
+    }
+
+    navigator.clipboard.writeText(productId).then(() => {
+        alert("تم نسخ ID المنتج: " + productId);
+    }).catch(() => {
+        alert("فشل في نسخ ID المنتج!");
+    });
+}
 
         function addProduct() {
             const name = document.getElementById("productName").value.trim();
