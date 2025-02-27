@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إدارة المخزن</title>
+    <title>إدارة المخزن 4</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -33,6 +33,7 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            height: 400px;
         }
 
         .products-list {
@@ -79,9 +80,10 @@
 </head>
 <body>
 
-    <h1>إدارة المخزن</h1>
+    <h1>إدارة المخزن 4</h1>
 
     <div class="container">
+        <!-- القسم الخاص بإدارة المنتجات -->
         <div class="form-container">
             <h2>إدارة المنتجات</h2>
             <input type="text" id="productName" class="input-field" placeholder="اسم المنتج">
@@ -99,6 +101,7 @@
             <a href="index.html" class="btn">العودة للرئيسية</a>
         </div>
 
+        <!-- قائمة المنتجات -->
         <div class="products-list" id="productsList">
             <h2>المنتجات في المخزن</h2>
             <p>جاري تحميل المنتجات...</p>
@@ -107,38 +110,44 @@
 
     <script>
         const API_BASE_URL = "https://warehouse-system-vqyo.onrender.com/api";
-        const warehouseId = 4; // المخزن رقم 4
+        const warehouseId = 4;
+        let productNames = []; // قائمة لتخمين الأسماء
 
         function fetchProducts() {
-            fetch(`${API_BASE_URL}/products/${warehouseId}`)
+            fetch(`${API_BASE_URL}/products?warehouseId=${warehouseId}`)
                 .then(response => response.json())
                 .then(data => {
                     const list = document.getElementById("productsList");
-                    list.innerHTML = "<h2>المنتجات في المخزن</h2>";
+                    list.innerHTML = "";
 
                     if (data.length === 0) {
-                        list.innerHTML += "<p>لا توجد منتجات حاليًا.</p>";
+                        list.innerHTML = "<p>لا توجد منتجات حاليًا.</p>";
                         return;
                     }
 
-                    const suggestions = document.getElementById("productSuggestions");
-                    suggestions.innerHTML = "";
+                    productNames = data.map(product => product.name); // تحديث قائمة الأسماء
+                    updateProductSuggestions();
 
                     data.forEach(product => {
                         const item = document.createElement("div");
                         item.className = "product-item";
                         item.innerHTML = `<strong>${product.name}</strong> - الكمية: ${product.quantity}`;
                         list.appendChild(item);
-
-                        const option = document.createElement("option");
-                        option.value = product.name;
-                        suggestions.appendChild(option);
                     });
                 })
-                .catch(error => {
-                    console.error("خطأ أثناء جلب المنتجات:", error);
+                .catch(() => {
                     document.getElementById("productsList").innerHTML = "<p style='color: red;'>حدث خطأ أثناء تحميل المنتجات.</p>";
                 });
+        }
+
+        function updateProductSuggestions() {
+            const suggestions = document.getElementById("productSuggestions");
+            suggestions.innerHTML = "";
+            productNames.forEach(name => {
+                const option = document.createElement("option");
+                option.value = name;
+                suggestions.appendChild(option);
+            });
         }
 
         function addProduct() {
@@ -153,7 +162,7 @@
             fetch(`${API_BASE_URL}/products`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, quantity, warehouseId })
+                body: JSON.stringify({ name, quantity, warehouseId }) 
             })
             .then(response => response.json())
             .then(() => {
@@ -171,8 +180,10 @@
                 return;
             }
 
-            fetch(`${API_BASE_URL}/products/${warehouseId}/${encodeURIComponent(name)}`, {
-                method: "DELETE"
+            fetch(`${API_BASE_URL}/products/delete`, {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, warehouseId })
             })
             .then(response => response.json())
             .then(() => {
@@ -191,10 +202,10 @@
                 return;
             }
 
-            fetch(`${API_BASE_URL}/products/${warehouseId}/${encodeURIComponent(name)}`, {
+            fetch(`${API_BASE_URL}/products/update`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ quantity })
+                body: JSON.stringify({ name, quantity, warehouseId })
             })
             .then(response => response.json())
             .then(() => {
