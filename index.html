@@ -89,9 +89,240 @@
         .footer a:hover {
             color: #00aaff;
         }
+
+
+
+
+
+
+
+/* زر المعلومات */
+.info-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  background-color: rgba(255, 255, 255, 0.3); /* شفافية أعلى */
+  color: black;
+  border: 2px solid #000;
+  border-radius: 50%;
+  font-size: 24px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  cursor: pointer;
+}
+
+.info-button:hover {
+  background-color: rgba(255, 255, 255, 0.5); /* تأثير شفافية عند التمرير */
+  transform: scale(1.1);
+}
+
+/* البطاقة */
+.info-card {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.7); /* لون شفاف يتناسب مع الخلفية */
+  border-radius: 20px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  z-index: 1001;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.info-card__content {
+  text-align: center;
+  color: white;
+}
+
+.info-card__title {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.info-card__text {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.info-card__link {
+  color: #4caf50; /* لون رابط مميز */
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.info-card__link:hover {
+  text-decoration: underline;
+}
+
+/* زر الإغلاق */
+.info-card__close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  color: white;
+  transition: color 0.3s ease;
+}
+
+.info-card__close:hover {
+  color: red;
+}
+
+/* إظهار البطاقة */
+.info-card.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+/.hidden {
+  display: none;
+}
+
+
+
+
+
+
+/* تصميم مستطيل لكل حساب */
+.info-card__account {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: rgba(255, 255, 255, 0.1); /* لون خلفية شفاف */
+  border-radius: 12px; /* حواف مستديرة */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+  text-decoration: none; /* إزالة التسطير */
+  color: white; /* لون النص */
+}
+
+/* تغيير اللون عند التمرير */
+.info-card__account:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* أيقونة الإنستغرام (وضع داكن) */
+.info-card__icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+  filter: invert(0%); /* جعل الأيقونة بيضاء في الوضع العادي */
+}
+
+/* تصميم النص */
+.info-card__link {
+  font-size: 16px;
+  font-weight: bold;
+  color: #FFA500; /* لون النص أبيض */
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+/* أزرار الإغلاق */
+.info-card__close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.2); /* خلفية شفافة */
+  border: none;
+  color: white; /* لون النص أبيض */
+  font-size: 16px;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.info-card__close:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+    
+    
+
+    
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
     </style>
 </head>
 <body>
+
+
+
+
+<!-- زر المعلومات -->
+<div id="infoButton" class="info-button">!</div>
+
+<!-- البطاقة -->
+<div id="infoCard" class="info-card hidden">
+  <div class="info-card__content">
+    <h2 class="info-card__title">مرحبًا!</h2>
+    <div class="info-card__accounts">
+      <!-- الحساب الأول -->
+      <a href="https://www.instagram.com/almohsen.o_o/" target="_blank" class="info-card__account">
+        <img src="https://img.icons8.com/?size=100&id=ZRiAFreol5mE&format=png&color=000000" alt="Instagram" class="info-card__icon" />
+        <span class="info-card__link">@almohsen.o_o</span>
+      </a>
+      <!-- الحساب الثاني -->
+      <a href="https://www.instagram.com/mjra_shop/" target="_blank" class="info-card__account">
+        <img src="https://img.icons8.com/?size=100&id=ZRiAFreol5mE&format=png&color=000000" alt="Instagram" class="info-card__icon" />
+        <span class="info-card__link">@مجرة عراقية</span>
+      </a>
+    </div>
+    <button id="closeCard" class="info-card__close">X</button>
+  </div>
+</div>
+
+
+
+
+    
+
 
     <h1>
          إدارة مخازن السينما العراقية مول الجادرية
