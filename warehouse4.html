@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إدارة المخزن 4</title>
+    <title>إدارة المخزن</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -79,10 +79,9 @@
 </head>
 <body>
 
-    <h1>إدارة المخزن 4</h1>
+    <h1>إدارة المخزن</h1>
 
     <div class="container">
-        <!-- القسم الخاص بإدارة المنتجات -->
         <div class="form-container">
             <h2>إدارة المنتجات</h2>
             <input type="text" id="productName" class="input-field" placeholder="اسم المنتج">
@@ -100,7 +99,6 @@
             <a href="index.html" class="btn">العودة للرئيسية</a>
         </div>
 
-        <!-- قائمة المنتجات -->
         <div class="products-list" id="productsList">
             <h2>المنتجات في المخزن</h2>
             <p>جاري تحميل المنتجات...</p>
@@ -109,10 +107,9 @@
 
     <script>
         const API_BASE_URL = "https://warehouse-system-vqyo.onrender.com/api";
-        const warehouseId = 4;
 
         function fetchProducts() {
-            fetch(`${API_BASE_URL}/products/${warehouseId}`)
+            fetch(`${API_BASE_URL}/products`)
                 .then(response => response.json())
                 .then(data => {
                     const list = document.getElementById("productsList");
@@ -132,7 +129,6 @@
                         item.innerHTML = `<strong>${product.name}</strong> - الكمية: ${product.quantity}`;
                         list.appendChild(item);
 
-                        // إضافة اسم المنتج إلى قائمة الاقتراحات
                         const option = document.createElement("option");
                         option.value = product.name;
                         suggestions.appendChild(option);
@@ -156,7 +152,7 @@
             fetch(`${API_BASE_URL}/products`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, quantity, warehouseId }) 
+                body: JSON.stringify({ name, quantity })
             })
             .then(response => response.json())
             .then(() => {
@@ -174,7 +170,7 @@
                 return;
             }
 
-            fetch(`${API_BASE_URL}/products/${encodeURIComponent(name)}`, {
+            fetch(`${API_BASE_URL}/products?name=${encodeURIComponent(name)}`, {
                 method: "DELETE"
             })
             .then(response => response.json())
@@ -194,7 +190,7 @@
                 return;
             }
 
-            fetch(`${API_BASE_URL}/products/${encodeURIComponent(name)}`, {
+            fetch(`${API_BASE_URL}/products?name=${encodeURIComponent(name)}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ quantity })
