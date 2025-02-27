@@ -89,7 +89,7 @@
             <input type="number" id="productQuantity" class="input-field" placeholder="الكمية">
             <button class="btn" onclick="addProduct()">إضافة منتج</button>
 
-            <input type="text" id="deleteProductName" class="input-field" placeholder="اسم المنتج للحذف">
+            <input type="text" id="deleteProductName" class="input-field" placeholder="اسم المنتج للحذف" list="productSuggestions">
             <button class="btn" onclick="deleteProduct()">حذف منتج</button>
 
             <input type="text" id="updateProductName" class="input-field" placeholder="اسم المنتج للتحديث" list="productSuggestions">
@@ -110,11 +110,13 @@
     <script>
         const API_BASE_URL = "https://warehouse-system-vqyo.onrender.com/api";
         const warehouseId = 4;
+        let productsData = [];
 
         function fetchProducts() {
-            fetch(`${API_BASE_URL}/products/${warehouseId}`)
+            fetch(`${API_BASE_URL}/products?warehouseId=${warehouseId}`)
                 .then(response => response.json())
                 .then(data => {
+                    productsData = data; 
                     const list = document.getElementById("productsList");
                     list.innerHTML = "";
 
@@ -129,21 +131,27 @@
                         item.innerHTML = `<strong>${product.name}</strong> - الكمية: ${product.quantity}`;
                         list.appendChild(item);
                     });
+
+                    updateProductSuggestions();
                 })
                 .catch(() => {
                     document.getElementById("productsList").innerHTML = "<p style='color: red;'>حدث خطأ أثناء تحميل المنتجات.</p>";
                 });
-       
         }
 
         function updateProductSuggestions() {
             const suggestions = document.getElementById("productSuggestions");
             suggestions.innerHTML = "";
-            productNames.forEach(name => {
+            productsData.forEach(product => {
                 const option = document.createElement("option");
-                option.value = name;
+                option.value = product.name;
                 suggestions.appendChild(option);
             });
+        }
+
+        function findProductIdByName(name) {
+            const product = productsData.find(p => p.name === name);
+            return product ? product.id : null;
         }
 
         function addProduct() {
@@ -160,7 +168,6 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ name, quantity, warehouseId }) 
             })
-            .then(response => response.json())
             .then(() => {
                 alert("تمت إضافة المنتج بنجاح!");
                 fetchProducts();
@@ -170,16 +177,16 @@
 
         function deleteProduct() {
             const name = document.getElementById("deleteProductName").value.trim();
+            const productId = findProductIdByName(name);
 
-            if (!name) {
-                alert("يرجى إدخال اسم المنتج للحذف.");
+            if (!productId) {
+                alert("لم يتم العثور على المنتج!");
                 return;
             }
 
-            fetch(`${API_BASE_URL}/products/${encodeURIComponent(name)}`, {
+            fetch(`${API_BASE_URL}/products/${productId}`, {
                 method: "DELETE"
             })
-            .then(response => response.json())
             .then(() => {
                 alert("تم حذف المنتج بنجاح!");
                 fetchProducts();
@@ -190,18 +197,18 @@
         function updateProduct() {
             const name = document.getElementById("updateProductName").value.trim();
             const quantity = parseInt(document.getElementById("updateProductQuantity").value);
+            const productId = findProductIdByName(name);
 
-            if (!name || isNaN(quantity) || quantity <= 0) {
+            if (!productId || isNaN(quantity) || quantity <= 0) {
                 alert("يرجى إدخال اسم المنتج والكمية الجديدة بشكل صحيح.");
                 return;
             }
 
-            fetch(`${API_BASE_URL}/products/${encodeURIComponent(name)}`, {
+            fetch(`${API_BASE_URL}/products/${productId}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ quantity })
             })
-            .then(response => response.json())
             .then(() => {
                 alert("تم تحديث المنتج بنجاح!");
                 fetchProducts();
