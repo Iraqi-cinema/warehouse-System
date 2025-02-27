@@ -10,24 +10,25 @@
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
+            direction: rtl;
         }
 
         h1 {
             background-color: #007bff;
             color: white;
-            padding: 20px;
+            padding: 15px;
             text-align: center;
         }
 
         .container {
             display: flex;
             justify-content: space-between;
-            max-width: 80%;
+            max-width: 90%;
             margin: 20px auto;
         }
 
         .form-container {
-            width: 30%;
+            width: 35%;
             background: white;
             padding: 20px;
             border-radius: 10px;
@@ -35,11 +36,13 @@
         }
 
         .products-list {
-            width: 65%;
+            width: 60%;
             background: white;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            height: 400px;
+            overflow-y: auto;
         }
 
         .input-field {
@@ -47,6 +50,9 @@
             padding: 10px;
             margin: 10px 0;
             display: block;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
 
         .btn {
@@ -58,6 +64,7 @@
             border-radius: 5px;
             cursor: pointer;
             margin-top: 10px;
+            font-size: 16px;
         }
 
         .btn:hover {
@@ -107,7 +114,12 @@
 
         function fetchProducts() {
             fetch(`${API_BASE_URL}/products?warehouseId=${warehouseId}`)
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     const list = document.getElementById("productsList");
                     list.innerHTML = "";
@@ -127,7 +139,8 @@
 
                     updateProductSuggestions();
                 })
-                .catch(() => {
+                .catch(error => {
+                    console.error("Error loading products:", error);
                     document.getElementById("productsList").innerHTML = "<p style='color: red;'>حدث خطأ أثناء تحميل المنتجات.</p>";
                 });
         }
@@ -143,29 +156,66 @@
         }
 
         function addProduct() {
-            const name = document.getElementById("productName").value;
-            const quantity = document.getElementById("productQuantity").value;
+            const name = document.getElementById("productName").value.trim();
+            const quantity = parseInt(document.getElementById("productQuantity").value);
+
+            if (!name || isNaN(quantity) || quantity <= 0) {
+                alert("يرجى إدخال اسم المنتج والكمية بشكل صحيح.");
+                return;
+            }
 
             fetch(`${API_BASE_URL}/products`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ name, quantity, warehouseId }) 
-            }).then(() => fetchProducts());
+            })
+            .then(response => response.json())
+            .then(() => {
+                alert("تمت إضافة المنتج بنجاح!");
+                fetchProducts();
+            })
+            .catch(() => alert("حدث خطأ أثناء الإضافة!"));
         }
 
         function deleteProduct() {
-            const name = document.getElementById("deleteProductName").value;
-            fetch(`${API_BASE_URL}/products/${name}`, { method: "DELETE" }).then(() => fetchProducts());
+            const name = document.getElementById("deleteProductName").value.trim();
+
+            if (!name) {
+                alert("يرجى إدخال اسم المنتج للحذف.");
+                return;
+            }
+
+            fetch(`${API_BASE_URL}/products/${encodeURIComponent(name)}`, {
+                method: "DELETE"
+            })
+            .then(response => response.json())
+            .then(() => {
+                alert("تم حذف المنتج بنجاح!");
+                fetchProducts();
+            })
+            .catch(() => alert("حدث خطأ أثناء الحذف!"));
         }
 
         function updateProduct() {
-            const name = document.getElementById("updateProductName").value;
-            const quantity = document.getElementById("updateProductQuantity").value;
-            fetch(`${API_BASE_URL}/products/${name}`, {
+            const name = document.getElementById("updateProductName").value.trim();
+            const quantity = parseInt(document.getElementById("updateProductQuantity").value);
+
+            if (!name || isNaN(quantity) || quantity <= 0) {
+                alert("يرجى إدخال اسم المنتج والكمية الجديدة بشكل صحيح.");
+                return;
+            }
+
+            fetch(`${API_BASE_URL}/products/${encodeURIComponent(name)}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ quantity })
-            }).then(() => fetchProducts());
+            })
+            .then(response => response.json())
+            .then(() => {
+                alert("تم تحديث المنتج بنجاح!");
+                fetchProducts();
+            })
+            .catch(() => alert("حدث خطأ أثناء التحديث!"));
         }
 
         fetchProducts();
