@@ -107,9 +107,10 @@
 
     <script>
         const API_BASE_URL = "https://warehouse-system-vqyo.onrender.com/api";
+        const warehouseId = 4; // المخزن رقم 4
 
         function fetchProducts() {
-            fetch(`${API_BASE_URL}/products`)
+            fetch(`${API_BASE_URL}/products/${warehouseId}`)
                 .then(response => response.json())
                 .then(data => {
                     const list = document.getElementById("productsList");
@@ -152,7 +153,7 @@
             fetch(`${API_BASE_URL}/products`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, quantity })
+                body: JSON.stringify({ name, quantity, warehouseId })
             })
             .then(response => response.json())
             .then(() => {
@@ -170,7 +171,7 @@
                 return;
             }
 
-            fetch(`${API_BASE_URL}/products?name=${encodeURIComponent(name)}`, {
+            fetch(`${API_BASE_URL}/products/${warehouseId}/${encodeURIComponent(name)}`, {
                 method: "DELETE"
             })
             .then(response => response.json())
@@ -190,7 +191,7 @@
                 return;
             }
 
-            fetch(`${API_BASE_URL}/products?name=${encodeURIComponent(name)}`, {
+            fetch(`${API_BASE_URL}/products/${warehouseId}/${encodeURIComponent(name)}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ quantity })
