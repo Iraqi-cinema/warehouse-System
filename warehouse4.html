@@ -108,115 +108,121 @@
         </div>
     </div>
 
-    <script>
-        const API_BASE_URL = "https://warehouse-system-vqyo.onrender.com/api";
-        const warehouseId = 4;
-        let productNames = []; // قائمة لتخمين الأسماء
+<script>
+    const API_BASE_URL = "https://warehouse-system-vqyo.onrender.com/api";
+    const warehouseId = 4;
+    let productNames = []; // قائمة لتخمين الأسماء
 
-        function fetchProducts() {
-            fetch(`${API_BASE_URL}/products?warehouseId=${warehouseId}`)
-                .then(response => response.json())
-                .then(data => {
-                    const list = document.getElementById("productsList");
-                    list.innerHTML = "";
+    // جلب المنتجات عند تحميل الصفحة
+    function fetchProducts() {
+        fetch(`${API_BASE_URL}/products?warehouseId=${warehouseId}`)
+            .then(response => response.json())
+            .then(data => {
+                const list = document.getElementById("productsList");
+                list.innerHTML = "";
 
-                    if (data.length === 0) {
-                        list.innerHTML = "<p>لا توجد منتجات حاليًا.</p>";
-                        return;
-                    }
+                if (data.length === 0) {
+                    list.innerHTML = "<p>لا توجد منتجات حاليًا.</p>";
+                    return;
+                }
 
-                    productNames = data.map(product => product.name); // تحديث قائمة الأسماء
-                    updateProductSuggestions();
+                productNames = data.map(product => product.name);
+                updateProductSuggestions();
 
-                    data.forEach(product => {
-                        const item = document.createElement("div");
-                        item.className = "product-item";
-                        item.innerHTML = `<strong>${product.name}</strong> - الكمية: ${product.quantity}`;
-                        list.appendChild(item);
-                    });
-                })
-                .catch(() => {
-                    document.getElementById("productsList").innerHTML = "<p style='color: red;'>حدث خطأ أثناء تحميل المنتجات.</p>";
+                data.forEach(product => {
+                    const item = document.createElement("div");
+                    item.className = "product-item";
+                    item.innerHTML = `<strong>${product.name}</strong> - الكمية: ${product.quantity}`;
+                    list.appendChild(item);
                 });
-        }
-
-        function updateProductSuggestions() {
-            const suggestions = document.getElementById("productSuggestions");
-            suggestions.innerHTML = "";
-            productNames.forEach(name => {
-                const option = document.createElement("option");
-                option.value = name;
-                suggestions.appendChild(option);
+            })
+            .catch(error => {
+                document.getElementById("productsList").innerHTML = "<p style='color: red;'>حدث خطأ أثناء تحميل المنتجات.</p>";
+                console.error("خطأ أثناء تحميل المنتجات:", error);
             });
+    }
+
+    // تحديث قائمة اقتراحات المنتجات
+    function updateProductSuggestions() {
+        const suggestions = document.getElementById("productSuggestions");
+        suggestions.innerHTML = "";
+        productNames.forEach(name => {
+            const option = document.createElement("option");
+            option.value = name;
+            suggestions.appendChild(option);
+        });
+    }
+
+    // إضافة منتج جديد
+    function addProduct() {
+        const name = document.getElementById("productName").value.trim();
+        const quantity = parseInt(document.getElementById("productQuantity").value);
+
+        if (!name || isNaN(quantity) || quantity <= 0) {
+            alert("يرجى إدخال اسم المنتج والكمية بشكل صحيح.");
+            return;
         }
 
-        function addProduct() {
-            const name = document.getElementById("productName").value.trim();
-            const quantity = parseInt(document.getElementById("productQuantity").value);
+        fetch(`${API_BASE_URL}/products`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, quantity, warehouseId }) 
+        })
+        .then(response => response.json())
+        .then(() => {
+            alert("تمت إضافة المنتج بنجاح!");
+            fetchProducts();
+        })
+        .catch(() => alert("حدث خطأ أثناء الإضافة!"));
+    }
 
-            if (!name || isNaN(quantity) || quantity <= 0) {
-                alert("يرجى إدخال اسم المنتج والكمية بشكل صحيح.");
-                return;
-            }
+    // حذف منتج باستخدام اسمه
+    function deleteProduct() {
+        const name = document.getElementById("deleteProductName").value.trim();
 
-            fetch(`${API_BASE_URL}/products`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, quantity, warehouseId }) 
-            })
-            .then(response => response.json())
-            .then(() => {
-                alert("تمت إضافة المنتج بنجاح!");
-                fetchProducts();
-            })
-            .catch(() => alert("حدث خطأ أثناء الإضافة!"));
+        if (!name) {
+            alert("يرجى إدخال اسم المنتج للحذف.");
+            return;
         }
 
-        function deleteProduct() {
-            const name = document.getElementById("deleteProductName").value.trim();
+        fetch(`${API_BASE_URL}/products?name=${encodeURIComponent(name)}&warehouseId=${warehouseId}`, {
+            method: "DELETE"
+        })
+        .then(response => response.json())
+        .then(() => {
+            alert("تم حذف المنتج بنجاح!");
+            fetchProducts();
+        })
+        .catch(() => alert("حدث خطأ أثناء الحذف!"));
+    }
 
-            if (!name) {
-                alert("يرجى إدخال اسم المنتج للحذف.");
-                return;
-            }
+    // تحديث كمية منتج باستخدام اسمه
+    function updateProduct() {
+        const name = document.getElementById("updateProductName").value.trim();
+        const quantity = parseInt(document.getElementById("updateProductQuantity").value);
 
-            fetch(`${API_BASE_URL}/products/delete`, {
-                method: "DELETE",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, warehouseId })
-            })
-            .then(response => response.json())
-            .then(() => {
-                alert("تم حذف المنتج بنجاح!");
-                fetchProducts();
-            })
-            .catch(() => alert("حدث خطأ أثناء الحذف!"));
+        if (!name || isNaN(quantity) || quantity <= 0) {
+            alert("يرجى إدخال اسم المنتج والكمية الجديدة بشكل صحيح.");
+            return;
         }
 
-        function updateProduct() {
-            const name = document.getElementById("updateProductName").value.trim();
-            const quantity = parseInt(document.getElementById("updateProductQuantity").value);
+        fetch(`${API_BASE_URL}/products?name=${encodeURIComponent(name)}&warehouseId=${warehouseId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ quantity })
+        })
+        .then(response => response.json())
+        .then(() => {
+            alert("تم تحديث المنتج بنجاح!");
+            fetchProducts();
+        })
+        .catch(() => alert("حدث خطأ أثناء التحديث!"));
+    }
 
-            if (!name || isNaN(quantity) || quantity <= 0) {
-                alert("يرجى إدخال اسم المنتج والكمية الجديدة بشكل صحيح.");
-                return;
-            }
-
-            fetch(`${API_BASE_URL}/products/update`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, quantity, warehouseId })
-            })
-            .then(response => response.json())
-            .then(() => {
-                alert("تم تحديث المنتج بنجاح!");
-                fetchProducts();
-            })
-            .catch(() => alert("حدث خطأ أثناء التحديث!"));
-        }
-
-        fetchProducts();
-    </script>
+    // استدعاء جلب المنتجات عند تحميل الصفحة
+    fetchProducts();
+</script>
+    
 
 </body>
 </html>
