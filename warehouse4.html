@@ -110,20 +110,13 @@
     <script>
         const API_BASE_URL = "https://warehouse-system-vqyo.onrender.com/api";
         const warehouseId = 4;
-        let productNames = [];
 
         function fetchProducts() {
-            fetch(`${API_BASE_URL}/products?warehouseId=${warehouseId}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Network response was not ok");
-                    }
-                    return response.json();
-                })
+            fetch(`${API_BASE_URL}/products/${warehouseId}`)
+                .then(response => response.json())
                 .then(data => {
                     const list = document.getElementById("productsList");
                     list.innerHTML = "";
-                    productNames = data.map(product => product.name);
 
                     if (data.length === 0) {
                         list.innerHTML = "<p>لا توجد منتجات حاليًا.</p>";
@@ -136,13 +129,11 @@
                         item.innerHTML = `<strong>${product.name}</strong> - الكمية: ${product.quantity}`;
                         list.appendChild(item);
                     });
-
-                    updateProductSuggestions();
                 })
-                .catch(error => {
-                    console.error("Error loading products:", error);
+                .catch(() => {
                     document.getElementById("productsList").innerHTML = "<p style='color: red;'>حدث خطأ أثناء تحميل المنتجات.</p>";
                 });
+       
         }
 
         function updateProductSuggestions() {
