@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قواعد بيانات المخازن</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #222;
+            text-align: center;
+            color: white;
+        }
+
+        h1 {
+            background-color: #007bff;
+            color: white;
+            padding: 20px;
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 15px;
+        }
+
+        .database-btn {
+            width: 250px;
+            padding: 15px;
+            background-color: #333;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .database-btn:hover {
+            background-color: #007bff;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>قواعد بيانات المخازن</h1>
+
+    <div class="container" id="buttonsContainer"></div>
+
+    <script>
+        const baseURL = "https://warehouse-system-vqyo.onrender.com/api/products/";
+
+        for (let i = 1; i <= 12; i++) {
+            const button = document.createElement("button");
+            button.className = "database-btn";
+            button.innerText = `قاعدة بيانات مخزن ${i}`;
+            button.onclick = () => {
+                window.location.href = baseURL + i;
+            };
+
+            document.getElementById("buttonsContainer").appendChild(button);
+        }
+    </script>
+
+</body>
+</html>
