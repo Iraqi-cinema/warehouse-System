@@ -3,138 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إدارة المنتجات</title>
+    <title>إدارة المخزن 1</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 0;
             background-color: #222;
             color: white;
             direction: rtl;
-            text-align: center;
         }
 
         h1 {
             background-color: #007bff;
+            color: white;
             padding: 15px;
-            border-radius: 5px;
+            text-align: center;
         }
 
         .container {
-            max-width: 600px;
+            display: flex;
+            justify-content: space-between;
+            max-width: 90%;
             margin: 20px auto;
+            gap: 30px;
+        }
+
+        .form-container {
+            width: 35%;
             background: #333;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
         }
 
-        .scrollable {
-            max-height: 300px;
+        .products-list {
+            width: 60%;
+            background: #333;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            height: 400px;
             overflow-y: auto;
+        }
+
+        .input-field {
+            width: 100%;
             padding: 10px;
-            border: 1px solid #555;
+            margin: 10px 0;
+            display: block;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
             border-radius: 5px;
             background: #444;
+            color: white;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 16px;
+            margin: 15px 0;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
         }
 
         .product-item {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
             padding: 10px;
             border-bottom: 1px solid #777;
             font-size: 16px;
         }
 
-        .quantity-controls {
-            display: flex;
-            align-items: center;
-        }
-
-        .quantity-btn {
-            background: #007bff;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 3px;
-            font-size: 14px;
-            margin: 0 5px;
-        }
-
-        .quantity-btn:hover {
-            background: #0056b3;
-        }
-
-        .quantity-display {
-            min-width: 30px;
-            text-align: center;
-            font-size: 16px;
+        .quantity {
             font-weight: bold;
             color: yellow;
+            min-width: 50px;
+            text-align: center;
         }
 
-        .input-group {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 15px;
+        .low-stock {
+            color: red;
         }
 
-        input, button {
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-
-        input {
-            width: 45%;
-        }
-
-        .add-btn {
-            background: #28a745;
+        .copy-btn {
+            background: #555;
             color: white;
+            border: none;
+            padding: 5px;
             cursor: pointer;
+            border-radius: 3px;
+            font-size: 12px;
         }
 
-        .add-btn:hover {
-            background: #218838;
+        .copy-btn:hover {
+            background: #777;
         }
     </style>
 </head>
 <body>
 
-    <h1>إدارة المنتجات</h1>
+    <h1>إدارة المخزن 1</h1>
 
     <div class="container">
-        <h2>إضافة منتج جديد</h2>
-        <div class="input-group">
-            <input type="text" id="productName" placeholder="اسم المنتج">
-            <input type="number" id="productQuantity" placeholder="الكمية">
-            <button class="add-btn" onclick="addProduct()">➕ إضافة</button>
+        <div class="form-container">
+            <h2>إدارة المنتجات</h2>
+            <input type="text" id="productName" class="input-field" placeholder="اسم المنتج">
+            <input type="number" id="productQuantity" class="input-field" placeholder="الكمية">
+            <button class="btn" onclick="addProduct()">إضافة منتج</button>
+
+            <input type="text" id="deleteProductName" class="input-field" placeholder="اسم المنتج للحذف">
+            <button class="btn" onclick="deleteProduct()">حذف منتج</button>
+
+            <input type="text" id="updateProductName" class="input-field" placeholder="اسم المنتج للتحديث" list="productSuggestions">
+            <datalist id="productSuggestions"></datalist>
+            <input type="number" id="updateProductQuantity" class="input-field" placeholder="الكمية الجديدة">
+            <button class="btn" onclick="updateProduct()">تحديث الكمية</button>
+
+            <a href="index.html" class="btn">العودة للرئيسية</a>
         </div>
 
-        <h2>قائمة المنتجات</h2>
-        <div class="scrollable" id="productsList">
+        <div class="products-list" id="productsList">
+            <h2>المنتجات في المخزن</h2>
             <p>جاري تحميل المنتجات...</p>
         </div>
     </div>
 
     <script>
-        const API_URL = "https://warehouse-system-vqyo.onrender.com/api/products/4";
+        const API_BASE_URL = "https://warehouse-system-vqyo.onrender.com/api";
+        const warehouseId = 1;
 
         function fetchProducts() {
-            fetch(API_URL)
+            fetch(`${API_BASE_URL}/products/${warehouseId}`)
                 .then(response => response.json())
                 .then(data => {
                     const list = document.getElementById("productsList");
-                    list.innerHTML = "";
+                    list.innerHTML = "<h2>المنتجات في المخزن</h2>";
 
                     if (data.length === 0) {
-                        list.innerHTML = "<p>لا توجد منتجات حاليًا.</p>";
+                        list.innerHTML += "<p>لا توجد منتجات حاليًا.</p>";
                         return;
                     }
 
@@ -142,13 +159,12 @@
                         const item = document.createElement("div");
                         item.className = "product-item";
 
+                        const quantityClass = product.quantity < 5 ? "low-stock" : "quantity";
+
                         item.innerHTML = `
-                            <strong>${product.name}</strong>
-                            <div class="quantity-controls">
-                                <button class="quantity-btn" onclick="updateQuantity('${product.id}', ${product.quantity - 1})">-</button>
-                                <span class="quantity-display" id="quantity-${product.id}">${product.quantity}</span>
-                                <button class="quantity-btn" onclick="updateQuantity('${product.id}', ${product.quantity + 1})">+</button>
-                            </div>
+                            <span><strong>${product.name}</strong></span>
+                            <span class="${quantityClass}">${product.quantity}</span>
+                            <button class="copy-btn" onclick="copyId('${product.id}')">📋</button>
                         `;
 
                         list.appendChild(item);
@@ -160,46 +176,77 @@
                 });
         }
 
-        function updateQuantity(productId, newQuantity) {
-            if (newQuantity < 0) {
-                alert("لا يمكن أن تكون الكمية أقل من 0!");
+        function copyId(productId) {
+            if (!productId) {
+                alert("لم يتم العثور على معرف المنتج!");
                 return;
             }
 
-            fetch(`${API_URL}/${productId}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ quantity: newQuantity })
-            })
-            .then(response => response.json())
-            .then(() => {
-                document.getElementById(`quantity-${productId}`).innerText = newQuantity;
-            })
-            .catch(() => alert("حدث خطأ أثناء تحديث الكمية!"));
+            navigator.clipboard.writeText(productId).then(() => {
+                alert("تم نسخ ID المنتج: " + productId);
+            }).catch(() => {
+                alert("فشل في نسخ ID المنتج!");
+            });
         }
 
         function addProduct() {
             const name = document.getElementById("productName").value.trim();
             const quantity = parseInt(document.getElementById("productQuantity").value);
 
-            if (!name || isNaN(quantity) || quantity < 0) {
-                alert("يرجى إدخال اسم المنتج والكمية بشكل صحيح!");
+            if (!name || isNaN(quantity) || quantity <= 0) {
+                alert("يرجى إدخال اسم المنتج والكمية بشكل صحيح.");
                 return;
             }
 
-            fetch(API_URL, {
+            fetch(`${API_BASE_URL}/products`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, quantity })
+                body: JSON.stringify({ name, quantity, warehouseId }) 
             })
-            .then(response => response.json())
             .then(() => {
                 alert("تمت إضافة المنتج بنجاح!");
                 fetchProducts();
-                document.getElementById("productName").value = "";
-                document.getElementById("productQuantity").value = "";
             })
-            .catch(() => alert("حدث خطأ أثناء إضافة المنتج!"));
+            .catch(() => alert("حدث خطأ أثناء الإضافة!"));
+        }
+
+        function deleteProduct() {
+            const name = document.getElementById("deleteProductName").value.trim();
+
+            if (!name) {
+                alert("يرجى إدخال اسم المنتج للحذف.");
+                return;
+            }
+
+            fetch(`${API_BASE_URL}/products/${encodeURIComponent(name)}`, {
+                method: "DELETE"
+            })
+            .then(() => {
+                alert("تم حذف المنتج بنجاح!");
+                fetchProducts();
+            })
+            .catch(() => alert("حدث خطأ أثناء الحذف!"));
+        }
+
+        function updateProduct() {
+            const name = document.getElementById("updateProductName").value.trim();
+            const quantity = parseInt(document.getElementById("updateProductQuantity").value);
+
+            if (!name || isNaN(quantity) || quantity <= 0) {
+                alert("يرجى إدخال اسم المنتج والكمية الجديدة بشكل صحيح.");
+                return;
+            }
+
+            fetch(`${API_BASE_URL}/products/${encodeURIComponent(name)}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ quantity })
+            })
+            .then(() => {
+                alert("تم تحديث المنتج بنجاح!");
+                fetchProducts();
+            })
+            .catch(() => alert("حدث خطأ أثناء التحديث!"));
         }
 
         fetchProducts();
