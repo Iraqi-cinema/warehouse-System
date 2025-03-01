@@ -31,12 +31,31 @@
             height: auto;
         }
 
-        .container {
+   /*   .container {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             margin-top: 20px;
-        }
+        } !-->*/
+
+
+        .container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* ثلاثة أعمدة */
+    gap: 20px; /* مسافة بين المخازن */
+    justify-content: center;
+    margin-top: 20px;
+}
+
+
+.warehouse-description {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #bbb;
+}
+
+
+        
 
         .warehouse-box {
             width: 250px;
@@ -381,6 +400,35 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+
+const descriptions = [
+    "يحتوي على معدات التصوير السينمائي.",  
+    "يضم ملحقات الإضاءة الاحترافية.",  
+    "مخزن خاص بالأزياء والإكسسوارات السينمائية.",  
+    "يحتوي على أجهزة الصوت والتسجيل.",  
+    "يضم مستلزمات المكياج السينمائي.",  
+    "مخزن خاص بالخلفيات والديكورات.",  
+    "مخصص لأجهزة المونتاج والمعدات التقنية.",  
+    "يحتوي على أدوات الإنتاج والإخراج.",  
+    "يضم المعدات الخاصة بالمؤثرات البصرية.",  
+    "مخزن خاص بأجهزة العرض السينمائي.",  
+    "يحتوي على مستلزمات الدعم اللوجستي.",  
+    "مخزن للأرشيف السينمائي والأشرطة القديمة."
+];
+
+for (let i = 1; i <= 12; i++) {
+    document.write(`
+        <div class="warehouse-box">
+            <h2>المخزن ${i}</h2>
+            <a href="warehouse${i}.html" class="btn">إدارة المخزن</a>
+            <p class="warehouse-description">${descriptions[i - 1]}</p>
+        </div>
+    `);
+}
+
+
+
+            
 
             
         </script>
