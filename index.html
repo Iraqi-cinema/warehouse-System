@@ -31,41 +31,14 @@
             height: auto;
         }
 
-   /*   .container {
+    .container {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             margin-top: 20px;
-        } !-->*/
+        } 
 
 
-      .container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* ثلاثة أعمدة في الشاشات الكبيرة */
-    gap: 20px; /* مسافة بين المخازن */
-    justify-content: center;
-    margin-top: 20px;
-    padding: 10px; /* تقليل الحواف قليلاً */
-}
-
-/* تناسب العرض مع الشاشات المتوسطة مثل الأجهزة اللوحية */
-@media (max-width: 992px) {
-    .container {
-        grid-template-columns: repeat(3, 1fr); /* عمودان في الأجهزة اللوحية */
-    }
-}
-
-/* تناسب العرض مع الهواتف */
-@media (max-width: 400px) {
-    .container {
-        grid-template-columns: repeat(3, 1fr); /* عمود واحد في الهواتف */
-    }
-
-    .warehouse-box {
-        width: 90%; /* تقليل العرض ليكون مناسبًا للهواتف */
-        margin: 10px auto; /* محاذاة في المنتصف */
-    }
-}
 
 
 .warehouse-description {
