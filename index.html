@@ -3,178 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مجرة كاشير - تسجيل الدخول</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo+Play:wght@1000&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Lalezar&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
+    <title>Mjra Iraqi - حلول الصوتيات والمرئيات</title>
+    <link rel="stylesheet" href="styles.css">
     <style>
         body {
-            font-family: 'Cairo Play', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            font-family: Arial, sans-serif;
             margin: 0;
-            background-color: #333;
+            padding: 0;
+            direction: rtl;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #222;
             color: #fff;
-        }
-        .login-container {
-            background-color: #444;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            width: 320px;
             text-align: center;
+            padding: 20px;
         }
-        .login-container img {
+        header img {
+            width: 100px;
+            height: auto;
+        }
+        .container {
             width: 80%;
-            margin-bottom: 20px;
-        }
-        .input-container {
-            position: relative;
-        }
-        input {
-            display: block;
-            margin: 10px auto;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            width: 90%;
-        }
-        .toggle-password {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #007bff;
-        }
-        button {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            padding: 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 100%;
-            font-size: 16px;
-            margin-top: 10px;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .error-message {
-            color: #dc3545;
-            margin-top: 10px;
-        }
-        .footer {
-            position: fixed;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 14px;
-            font-family: 'Lalezar', sans-serif;
+            margin: auto;
+            overflow: hidden;
             text-align: center;
-            z-index: 1000;
         }
-        .footer img {
-            width: 40px;
-            vertical-align: middle;
-            margin-right: 10px;
+        .services {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin: 40px 0;
+        }
+        .service {
+            background: #fff;
+            padding: 20px;
+            margin: 10px;
+            width: 30%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .service img {
+            width: 100%;
+            height: auto;
+        }
+        .contact {
+            background: #222;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+        }
+        .contact a {
+            color: #ffcc00;
+            text-decoration: none;
+        }
+        @media (max-width: 768px) {
+            .services {
+                flex-direction: column;
+                align-items: center;
+            }
+            .service {
+                width: 80%;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <img src="mjralogo.png" alt="Logo">
-        <div class="input-container">
-            <input type="text" id="username" placeholder="اسم المستخدم">
+
+<header>
+    <img src="logo.png" alt="شعار الشركة">
+    <h1>Mjra Iraqi - حلول الصوتيات والمرئيات</h1>
+</header>
+
+<div class="container">
+    <h2>من نحن</h2>
+    <p>نحن شركة **Mjra Iraqi**، نقدم أحدث الحلول في مجال الصوتيات والمرئيات، لنلبي احتياجات الأفراد والشركات بتقنيات متقدمة.</p>
+
+    <h2>خدماتنا</h2>
+    <div class="services">
+        <div class="service">
+            <img src="av_installation.jpg" alt="تركيب الأنظمة الصوتية والمرئية">
+            <h3>تركيب الأنظمة الصوتية والمرئية</h3>
+            <p>نقدم خدمات تركيب أنظمة الصوت والفيديو بجودة عالية.</p>
         </div>
-        <div class="input-container">
-            <input type="password" id="password" placeholder="كلمة السر">
-            <i class="fas fa-eye toggle-password" onclick="togglePassword()"></i>
+        <div class="service">
+            <img src="home_theater.jpg" alt="تصميم أنظمة المسرح المنزلي">
+            <h3>تصميم أنظمة المسرح المنزلي</h3>
+            <p>نوفر لك تجربة سينمائية في منزلك بأحدث التقنيات.</p>
         </div>
-        <button onclick="login()">تسجيل الدخول</button>
-        <button onclick="register()">إنشاء حساب جديد</button>
-        <p class="error-message" id="error-message"></p>
+        <div class="service">
+            <img src="conference_systems.jpg" alt="أنظمة المؤتمرات والاجتماعات">
+            <h3>أنظمة المؤتمرات والاجتماعات</h3>
+            <p>نوفر حلولاً متقدمة لغرف الاجتماعات والشركات.</p>
+        </div>
     </div>
+</div>
 
-    <div class="footer">
-        <a href="https://www.instagram.com/mjra_shop?igsh=MTUyY292c3h4ajdr">
-            <img src="mjralogo.png" alt="Logo">
-        </a>
-        <p>حقوق © 2024 مجرة عراقية</p>
-    </div>
+<div class="contact">
+    <h2>تواصل معنا</h2>
+    <p>للاستفسارات، يمكنكم مراسلتنا عبر البريد الإلكتروني:</p>
+    <p><a href="mailto:almuhsenalgbwry@gmail.com">almuhsenalgbwry@gmail.com</a></p>
+</div>
 
-    <script>
-        const API_URL = "https://warehouse-system-vqyo.onrender.com/api/users";
-
-        function togglePassword() {
-            const passwordField = document.getElementById('password');
-            const toggleIcon = document.querySelector('.toggle-password');
-            passwordField.type = passwordField.type === 'password' ? 'text' : 'password';
-            toggleIcon.classList.toggle('fa-eye-slash');
-            toggleIcon.classList.toggle('fa-eye');
-        }
-
-        async function login() {
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value.trim();
-            const errorMessage = document.getElementById('error-message');
-
-            if (!username || !password) {
-                errorMessage.textContent = "يرجى إدخال اسم المستخدم وكلمة السر!";
-                return;
-            }
-
-            try {
-                const response = await fetch(`${API_URL}/login`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ username, password })
-                });
-
-                const data = await response.json();
-                if (response.ok) {
-                    alert("تم تسجيل الدخول بنجاح!");
-                    window.location.href = "index1.html";
-                } else {
-                    errorMessage.textContent = data.message || "خطأ في تسجيل الدخول!";
-                }
-            } catch (error) {
-                errorMessage.textContent = "حدث خطأ أثناء الاتصال بالخادم!";
-            }
-        }
-
-        async function register() {
-            const username = prompt("أدخل اسم المستخدم الجديد:");
-            const password = prompt("أدخل كلمة السر:");
-
-            if (!username || !password) {
-                alert("يجب إدخال جميع البيانات!");
-                return;
-            }
-
-            try {
-                const response = await fetch(`${API_URL}/register`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ username, password })
-                });
-
-                const data = await response.json();
-                if (response.ok) {
-                    alert("تم إنشاء الحساب بنجاح!");
-                } else {
-                    alert(data.message || "حدث خطأ أثناء إنشاء الحساب!");
-                }
-            } catch (error) {
-                alert("حدث خطأ أثناء الاتصال بالخادم!");
-            }
-        }
-    </script>
 </body>
 </html>
