@@ -18,10 +18,18 @@
             color: #fff;
             text-align: center;
             padding: 20px;
+            position: relative;
         }
-        header img {
-            width: 100px;
-            height: auto;
+        #lang-toggle {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #ffcc00;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
         }
         .container {
             width: 80%;
@@ -70,39 +78,94 @@
 <body>
 
 <header>
-    <img src="mjralogo.png" alt="شعار الشركة">
-    <h1>Mjra Iraqi - حلول الصوتيات والمرئيات</h1>
+    <button id="lang-toggle">English</button>
+    <img src="logo.png" alt="شعار الشركة">
+    <h1 id="title">Mjra Iraqi - حلول الصوتيات والمرئيات</h1>
 </header>
 
 <div class="container">
-    <h2>من نحن</h2>
-    <p>نحن شركة Mjra Iraqi، نقدم أحدث الحلول في مجال الصوتيات والمرئيات، لنلبي احتياجات الأفراد والشركات بتقنيات متقدمة.</p>
+    <h2 id="about-title">من نحن</h2>
+    <p id="about-text">نحن شركة **Mjra Iraqi**، نقدم أحدث الحلول في مجال الصوتيات والمرئيات، لنلبي احتياجات الأفراد والشركات بتقنيات متقدمة.</p>
 
-    <h2>خدماتنا</h2>
+    <h2 id="services-title">خدماتنا</h2>
     <div class="services">
         <div class="service">
-            <img src="8A049BDF-5AAD-4EC6-81C0-2F895C6E251F.jpeg" alt="تركيب الأنظمة الصوتية والمرئية">
-            <h3>تركيب الأنظمة الصوتية والمرئية</h3>
-            <p>نقدم خدمات تركيب أنظمة الصوت والفيديو بجودة عالية.</p>
+            <img src="av_installation.jpg" alt="تركيب الأنظمة الصوتية والمرئية">
+            <h3 id="service1-title">تركيب الأنظمة الصوتية والمرئية</h3>
+            <p id="service1-text">نقدم خدمات تركيب أنظمة الصوت والفيديو بجودة عالية.</p>
         </div>
         <div class="service">
-            <img src="5D436BF1-CC2F-4D84-B11E-BE720EA1C529.jpeg" alt="تصميم أنظمة المسرح المنزلي">
-            <h3>تصميم أنظمة المسرح المنزلي</h3>
-            <p>نوفر لك تجربة سينمائية في منزلك بأحدث التقنيات.</p>
+            <img src="home_theater.jpg" alt="تصميم أنظمة المسرح المنزلي">
+            <h3 id="service2-title">تصميم أنظمة المسرح المنزلي</h3>
+            <p id="service2-text">نوفر لك تجربة سينمائية في منزلك بأحدث التقنيات.</p>
         </div>
         <div class="service">
-            <img src="36BFE2CC-B7B5-4C97-A767-4F824D717B3B.jpeg" alt="أنظمة المؤتمرات والاجتماعات">
-            <h3>أنظمة المؤتمرات والاجتماعات</h3>
-            <p>نوفر حلولاً متقدمة لغرف الاجتماعات والشركات.</p>
+            <img src="conference_systems.jpg" alt="أنظمة المؤتمرات والاجتماعات">
+            <h3 id="service3-title">أنظمة المؤتمرات والاجتماعات</h3>
+            <p id="service3-text">نوفر حلولاً متقدمة لغرف الاجتماعات والشركات.</p>
         </div>
     </div>
 </div>
 
 <div class="contact">
-    <h2>تواصل معنا</h2>
-    <p>للاستفسارات، يمكنكم مراسلتنا عبر البريد الإلكتروني:</p>
+    <h2 id="contact-title">تواصل معنا</h2>
+    <p id="contact-text">للاستفسارات، يمكنكم مراسلتنا عبر البريد الإلكتروني:</p>
     <p><a href="mailto:almuhsenalgbwry@gmail.com">almuhsenalgbwry@gmail.com</a></p>
 </div>
+
+<script>
+    const translations = {
+        "ar": {
+            "title": "Mjra Iraqi - حلول الصوتيات والمرئيات",
+            "about-title": "من نحن",
+            "about-text": "نحن شركة Mjra Iraqi، نقدم أحدث الحلول في مجال الصوتيات والمرئيات، لنلبي احتياجات الأفراد والشركات بتقنيات متقدمة.",
+            "services-title": "خدماتنا",
+            "service1-title": "تركيب الأنظمة الصوتية والمرئية",
+            "service1-text": "نقدم خدمات تركيب أنظمة الصوت والفيديو بجودة عالية.",
+            "service2-title": "تصميم أنظمة المسرح المنزلي",
+            "service2-text": "نوفر لك تجربة سينمائية في منزلك بأحدث التقنيات.",
+            "service3-title": "أنظمة المؤتمرات والاجتماعات",
+            "service3-text": "نوفر حلولاً متقدمة لغرف الاجتماعات والشركات.",
+            "contact-title": "تواصل معنا",
+            "contact-text": "للاستفسارات، يمكنكم مراسلتنا عبر البريد الإلكتروني:",
+            "button-text": "English"
+        },
+        "en": {
+            "title": "Mjra Iraqi - AV Solutions",
+            "about-title": "About Us",
+            "about-text": "We are Mjra Iraqi, providing the latest AV solutions to meet the needs of individuals and businesses with advanced technologies.",
+            "services-title": "Our Services",
+            "service1-title": "AV System Installation",
+            "service1-text": "We provide high-quality audio and video system installations.",
+            "service2-title": "Home Theater Design",
+            "service2-text": "Experience a cinematic environment at home with the latest technology.",
+            "service3-title": "Conference & Meeting Systems",
+            "service3-text": "We offer advanced solutions for conference rooms and corporate settings.",
+            "contact-title": "Contact Us",
+            "contact-text": "For inquiries, you can email us at:",
+            "button-text": "العربية"
+        }
+    };
+
+    let currentLang = "ar";
+
+    document.getElementById("lang-toggle").addEventListener("click", function() {
+        currentLang = currentLang === "ar" ? "en" : "ar";
+        document.getElementById("title").textContent = translations[currentLang]["title"];
+        document.getElementById("about-title").textContent = translations[currentLang]["about-title"];
+        document.getElementById("about-text").textContent = translations[currentLang]["about-text"];
+        document.getElementById("services-title").textContent = translations[currentLang]["services-title"];
+        document.getElementById("service1-title").textContent = translations[currentLang]["service1-title"];
+        document.getElementById("service1-text").textContent = translations[currentLang]["service1-text"];
+        document.getElementById("service2-title").textContent = translations[currentLang]["service2-title"];
+        document.getElementById("service2-text").textContent = translations[currentLang]["service2-text"];
+        document.getElementById("service3-title").textContent = translations[currentLang]["service3-title"];
+        document.getElementById("service3-text").textContent = translations[currentLang]["service3-text"];
+        document.getElementById("contact-title").textContent = translations[currentLang]["contact-title"];
+        document.getElementById("contact-text").textContent = translations[currentLang]["contact-text"];
+        document.getElementById("lang-toggle").textContent = translations[currentLang]["button-text"];
+    });
+</script>
 
 </body>
 </html>
